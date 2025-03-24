@@ -1,5 +1,3 @@
-<div class="bg-animation"></div>
-
 <div class="login-container">
     <div class="row align-items-center">
       <!-- Logo Section -->
@@ -16,38 +14,38 @@
   
           <!-- Wrapper for Sliding Effect -->
           <div class="form-wrapper" [ngClass]="{ 'slide-right': isRegisterMode }">
-            <!-- Login Form -->
-            <div class="form-container login-form">
-              <div class="card-body">
-                <form (ngSubmit)="onSubmitLogin()" #loginForm="ngForm">
-                  <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      class="form-control"
-                      [(ngModel)]="email"
-                      required
-                      placeholder="Enter your email"
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input
-                      type="password"
-                      id="password"
-                      name="password"
-                      class="form-control"
-                      [(ngModel)]="password"
-                      required
-                      placeholder="Enter your password"
-                    />
-                  </div>
-                  <button type="submit" class="btn btn-primary w-100" [disabled]="!loginForm.form.valid">
-                    Sign In
-                  </button>
-                </form>
+<!-- Login Form -->
+<div class="form-container login-form">
+    <div class="card-body">
+      <form (ngSubmit)="onSubmitLogin()" #loginForm="ngForm">
+        <div class="mb-3">
+          <label for="log in username" class="form-label">log in Username</label>
+          <input
+            type="text"
+            id="log in username"
+            name="log in username"
+            class="form-control"
+            [(ngModel)]="username"
+            required
+            placeholder="Enter your username"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="log in password" class="form-label">Password</label>
+          <input
+            type="log in password"
+            id="log in password"
+            name="log in password"
+            class="form-control"
+            [(ngModel)]="password"
+            required
+            placeholder="Enter your password"
+          />
+        </div>
+        <button type="submit" class="btn btn-primary w-100" [disabled]="!loginForm.form.valid">
+          Sign In
+        </button>
+      </form>
                 <div class="text-center mt-3">
                   <a href="#" class="text-primary">Forgot password?</a>
                 </div>
@@ -59,50 +57,88 @@
               </div>
             </div>
   
-            <!-- Register Form -->
-            <div class="form-container register-form">
-              <div class="card-body">
-                <form (ngSubmit)="onSubmitRegister()" #registerForm="ngForm">
-                  <div class="mb-3">
-                    <label for="register-name" class="form-label">Full Name</label>
-                    <input
-                      type="text"
-                      id="register-name"
-                      name="name"
-                      class="form-control"
-                      [(ngModel)]="fullName"
-                      required
-                      placeholder="Enter your full name"
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="register-email" class="form-label">Email</label>
-                    <input
-                      type="email"
-                      id="register-email"
-                      name="email"
-                      class="form-control"
-                      [(ngModel)]="registerEmail"
-                      required
-                      placeholder="Enter your email"
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="register-password" class="form-label">Password</label>
-                    <input
-                      type="password"
-                      id="register-password"
-                      name="password"
-                      class="form-control"
-                      [(ngModel)]="registerPassword"
-                      required
-                      placeholder="Enter your password"
-                    />
-                  </div>
-                  <button type="submit" class="btn btn-primary w-100" [disabled]="!registerForm.form.valid">
-                    Register
-                  </button>
-                </form>
+<!-- Register Form -->
+<div class="form-container register-form">
+    <div class="card-body">
+      <form (ngSubmit)="onSubmitRegister()" #registerForm="ngForm">
+        <div class="mb-3">
+          <label for="first-name" class="form-label">First Name</label>
+          <input
+            type="text"
+            id="first-name"
+            name="first_name"
+            class="form-control"
+            [(ngModel)]="firstName"
+            required
+            placeholder="Enter your first name"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="last-name" class="form-label">Last Name</label>
+          <input
+            type="text"
+            id="last-name"
+            name="last_name"
+            class="form-control"
+            [(ngModel)]="lastName"
+            required
+            placeholder="Enter your last name"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="register username" class="form-label">register Username</label>
+          <input
+            type="text"
+            id="register username"
+            name="register username"
+            class="form-control"
+            [(ngModel)]="username"
+            required
+            placeholder="Enter your username"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="form-control"
+            [(ngModel)]="registerEmail"
+            required
+            placeholder="Enter your email"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="contact" class="form-label">Contact Number</label>
+          <input
+            type="text"
+            id="contact"
+            name="contact_number"
+            class="form-control"
+            [(ngModel)]="contactNumber"
+            required
+            placeholder="Enter your contact number"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-control"
+            [(ngModel)]="registerPassword"
+            required
+            placeholder="Enter your password"
+          />
+        </div>
+        <!-- Hidden Role Field -->
+        <input type="hidden" name="role" [(ngModel)]="role" />
+        <button type="submit" class="btn btn-primary w-100" [disabled]="!registerForm.form.valid">
+          Register
+        </button>
+      </form>
                 <!-- Switch to Login -->
                 <div class="text-center mt-3">
                   <button class="btn btn-secondary w-100" (click)="toggleForm()">Already have an account?</button>
@@ -113,5 +149,13 @@
         </div>
       </div>
     </div>
+      <!-- Background Decoration -->
+  <div class="spear-container">
+    <img src="assets/BG.png" class="spear" />
+    <img src="assets/BG.png" class="spear" />
+    <img src="assets/BG.png" class="spear" />
+    <img src="assets/BG.png" class="spear" />
+    <img src="assets/BG.png" class="spear" />
+  </div>
   </div>
   
