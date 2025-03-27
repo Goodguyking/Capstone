@@ -1,0 +1,81 @@
+.profile-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: radial-gradient(circle, #F2B28C 0%, white 80%);
+    gap: 20px;
+    padding: 40px;
+}
+
+.profile-card {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    width: 800px;
+    height: 650px;
+    position: relative;
+}
+
+/* Profile Picture Container */
+.profile-pic-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* Profile Picture */
+.profile-pic {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 6px solid #b82132;
+}
+
+/* Edit Button */
+.edit-button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 50px;
+    height: 50px;
+    background-color: #b82132;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s;
+    border: none;
+}
+
+.edit-button:hover {
+    background-color: #d2665a;
+}
+
+/* Edit Icon */
+.edit-button mat-icon {
+    color: white;
+    font-size: 24px;
+}
+
+/* Profile Info Section */
+.profile-info-container {
+    width: 100%;
+    position: absolute;
+    bottom: 20px;
+    left: 30px;
+}
+
+.profile-info {
+    font-size: 30px;
+    color: #333;
+    margin: 8px 0;
+    text-align: left;
+}

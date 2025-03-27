@@ -1,0 +1,40 @@
+<mat-sidenav-container class="sidenav-container">
+    <!-- Sidebar -->
+    <mat-sidenav #sidenav mode="side" opened>
+      <mat-nav-list>
+        <a mat-list-item routerLink="/home" routerLinkActive="active-link">Home</a>
+        <a mat-list-item routerLink="/profile" routerLinkActive="active-link">Profile</a>
+        <a mat-list-item routerLink="/settings" routerLinkActive="active-link">Settings</a>
+      </mat-nav-list>
+
+      <!-- Logout Button at the Bottom -->
+      <div>
+        <a mat-list-item class="logout-button" (click)="logout()">Logout</a>
+      </div>
+    </mat-sidenav>
+  
+    <!-- Main Content -->
+    <mat-sidenav-content>
+      <!-- Toolbar -->
+      <mat-toolbar color="primary">
+        <button mat-icon-button (click)="sidenav.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span>
+          <img src="assets/Sibat.png" alt="Logo" class="logo" style="width: 20%;" />
+        </span>
+      </mat-toolbar>
+  
+      <!-- Dynamic Content -->
+      <div class="content-container">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+
+
+
+</mat-sidenav-container>
+<div class="spear-container">
+  <img src="assets/BG.png" class="spear" />
+
+</div>

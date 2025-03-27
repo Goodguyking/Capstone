@@ -6,5 +6,11 @@ import { Component } from '@angular/core';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
+  isSidenavOpen = true;
+
+
+  toggleSidenav() {
+    this.isSidenavOpen = !this.isSidenavOpen;
+  }
 
 }
