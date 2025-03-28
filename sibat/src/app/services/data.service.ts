@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -45,14 +45,48 @@ export class DataService {
     return this.http.post<any>(`${this.apiUrl}?route=verify-email`, data);
   }
   
+  getUserProfile(): Observable<any> {
+    const token = localStorage.getItem('token'); // Retrieve JWT token
+  
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error({ error: 'User not logged in' });
+      });
+    }
+  
+    return this.http.get<any>(`${this.apiUrl}?route=getUserData`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+  }
   
 
+  uploadProfilePicture(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('profilepic', file); // Append file
+  
+    const token = localStorage.getItem('token');
+  
+    return this.http.post<any>(`${this.apiUrl}?route=uploadProfilePic`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
+  updateUserProfile(userData: { first_name: string; last_name: string; email: string; location: string }): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
 
-
-
-
-
-
-
-
+    return this.http.post(`${this.apiUrl}?route=updateUserProfile`, userData, { headers });
+  }
 }
+
+
+
+
+
+
+
+

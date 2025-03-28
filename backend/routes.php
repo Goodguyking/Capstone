@@ -28,6 +28,24 @@ switch ($requestUri) {
         handleVerifyCode();
         break;
 
+    case 'getUserData':
+        require_once 'routes/get.php';
+        getUserData();
+        break;
+
+    case 'uploadProfilePic':
+        require_once 'routes/post.php';
+        uploadProfilePic();
+        break;
+    case 'updateUserProfile':
+        require_once 'routes/post.php';
+        updateUserProfile();
+        break;
+
+
+
+
+        
         default:
         echo json_encode(["error" => "Invalid route"]);
         break;

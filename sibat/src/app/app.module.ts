@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms'; // <-- Import FormsModule
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms'; // ✅ Import this module
 
 
 
@@ -45,6 +46,7 @@ import { ProfileComponent } from './profile/profile.component';
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
+    ReactiveFormsModule,
 
   ],
   providers: [
