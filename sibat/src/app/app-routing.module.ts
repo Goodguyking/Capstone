@@ -6,11 +6,14 @@ import { HomeComponent } from './home/home.component';
 import { LayoutComponent } from './layout/layout.component';
 import { AuthGuard } from './guards/auth.guard';
 import { ProfileComponent } from './profile/profile.component';
+import { RegisterRunnerComponent } from './register-runner/register-runner.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent }, 
   { path: 'verify-user', component: VerifyUserComponent },
 
+  
+  { path: 'registration-runner', component: RegisterRunnerComponent },
   { 
     path: '', 
     component: LayoutComponent, 
@@ -19,10 +22,11 @@ const routes: Routes = [
       { path: 'home', component: HomeComponent },
       { path: 'profile', component: ProfileComponent },
       // { path: 'settings', component: SettingsComponent },
-      { path: '', redirectTo: 'home', pathMatch: 'full' } // Default inside layout
+      // Remove the redirectTo: 'home' here
     ]
   },
 
+  { path: '', redirectTo: 'login', pathMatch: 'full' }, // Redirect root to login
   { path: '**', redirectTo: 'login' } // Catch-all route
 ];
 

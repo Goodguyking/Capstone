@@ -41,8 +41,11 @@ switch ($requestUri) {
         require_once 'routes/post.php';
         updateUserProfile();
         break;
-
-
+    case 'applyAsRunner':
+        require_once 'routes/post.php';
+        applyAsRunner();
+        break;
+        
 
 
         

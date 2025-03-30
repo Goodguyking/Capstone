@@ -1,0 +1,80 @@
+<div class="container mt-5 register-container">
+    <!-- Back Button at the Top Left -->
+    <div class="mb-3">
+      <button type="button" class="btn back-btn" routerLink="/home">
+        &larr; Back
+      </button>
+    </div>
+  
+    <!-- Logo and Header Section -->
+    <div class="text-center mb-4">
+      <img src="assets/Sibat.png" alt="Sibat Logo" class="logo mb-3" />
+      <h2 class="form-title">Register as a Runner</h2>
+    </div>
+  
+    <!-- Stepper for Registration -->
+    <mat-horizontal-stepper linear #stepper>
+      <!-- Step 1: Upload Documents & Personal Info -->
+      <mat-step [stepControl]="firstFormGroup">
+        <form [formGroup]="firstFormGroup">
+            <div class="mb-3">
+                <label class="form-label">Upload Valid ID #1</label>
+                <input type="file" class="form-control input-field" (change)="onFileSelect($event, 'validId1')" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Upload Valid ID #2</label>
+                <input type="file" class="form-control input-field" (change)="onFileSelect($event, 'validId2')" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Upload Police/NBI Clearance</label>
+                <input type="file" class="form-control input-field" (change)="onFileSelect($event, 'policeClearance')" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Upload Barangay Clearance</label>
+                <input type="file" class="form-control input-field" (change)="onFileSelect($event, 'barangayClearance')" required />
+              </div>
+              
+          <div class="mb-3">
+            <label class="form-label">Mode of Transport</label>
+            <mat-select formControlName="modeOfTransport" required>
+              <mat-option value="bicycle">Bicycle</mat-option>
+              <mat-option value="motorcycle">Motorcycle</mat-option>
+              <mat-option value="car">Car</mat-option>
+              <mat-option value="on-foot">On Foot</mat-option>
+            </mat-select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Emergency Contact Person</label>
+            <input type="text" class="form-control input-field" formControlName="emergencyContactPerson" placeholder="Enter full name" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Emergency Contact Phone Number</label>
+            <input type="tel" class="form-control input-field" formControlName="emergencyContactNumber" placeholder="Enter phone number" required />
+          </div>
+          <div class="d-flex justify-content-end">
+            <button mat-button matStepperNext color="primary">Next</button>
+          </div>
+        </form>
+      </mat-step>
+  
+      <!-- Step 2: Terms & Agreement -->
+      <mat-step [stepControl]="secondFormGroup">
+        <form [formGroup]="secondFormGroup" (ngSubmit)="onSubmit()">
+          <h2>Terms & Conditions</h2>
+          <p>By registering, you agree to the following:</p>
+          <ul>
+            <li>Complete errands professionally and on time.</li>
+            <li>Payments are based on completed tasks.</li>
+            <li>You assume all risks while performing errands.</li>
+            <li>Violation of terms may lead to suspension.</li>
+            <li>Your data is used only for task assignments.</li>
+          </ul>
+          <mat-checkbox formControlName="agreement">I accept the terms and conditions</mat-checkbox>
+          <div class="d-flex justify-content-between mt-3">
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button color="primary" type="submit" [disabled]="!secondFormGroup.get('agreement')?.value">Submit</button>
+          </div>
+        </form>
+      </mat-step>
+    </mat-horizontal-stepper>
+  </div>

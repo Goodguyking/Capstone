@@ -1,0 +1,71 @@
+.register-container {
+    max-width: 600px;
+    background: #F6DED8;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .logo {
+    width: 250px;  
+    height: auto;  
+    margin-top: -20%;
+  }
+  
+  .header-text {
+    color: #B82132;
+    font-weight: bold;
+    font-family: 'Kanit', sans-serif;
+  }
+  
+  .form-title {
+    color: #D2665A;
+    font-weight: bold;
+    text-align: center;
+    margin-top: -20%;
+  }
+  
+  .form-label {
+    font-weight: bold;
+    color: #B82132;
+  }
+  
+  .input-field {
+    border: 2px solid #D2665A;
+    border-radius: 5px;
+  }
+  
+  .input-field:focus {
+    border-color: #B82132;
+    box-shadow: 0 0 5px rgba(184, 33, 50, 0.5);
+  }
+  
+  .back-btn {
+    background: #D2665A;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+  }
+  
+  .back-btn:hover {
+    background: #B82132;
+  }
+  
+  .submit-btn {
+    background: #B82132;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 5px;
+  }
+  
+  .submit-btn:hover {
+    background: #D2665A;
+  }
+  
+  .submit-btn:disabled {
+    background: #F2B28C;
+    color: #fff;
+  }
+  

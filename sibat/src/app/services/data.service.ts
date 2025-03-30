@@ -81,6 +81,36 @@ export class DataService {
 
     return this.http.post(`${this.apiUrl}?route=updateUserProfile`, userData, { headers });
   }
+
+
+  applyAsRunner(formData: FormData): Observable<any> {
+    const token = localStorage.getItem('token'); // ✅ Retrieve the token
+  
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error({ error: 'Missing token' });
+      });
+    }
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+  
+    return this.http.post(`${this.apiUrl}?route=applyAsRunner`, formData, { headers });
+  }
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
 }
 
 
