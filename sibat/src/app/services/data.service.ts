@@ -100,7 +100,182 @@ export class DataService {
   }
   
   
+  getAllUsers(): Observable<any> {
+    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
   
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error({ error: 'Missing token' });
+      });
+    }
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+  
+    return this.http.get(`${this.apiUrl}?route=getAllUsers`, { headers });
+  }
+
+  deleteUser(userId: number): Observable<any> {
+    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+  
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error({ error: 'Missing token' });
+      });
+    }
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+  
+    return this.http.delete(`${this.apiUrl}?route=deleteUser&userid=${userId}`, { headers });
+  }
+
+
+  editUser(userData: {
+    userid: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    contact_number: string;
+    role: string;
+    location: string;
+  }): Observable<any> {
+    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+  
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error({ error: 'Missing token' });
+      });
+    }
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  
+    return this.http.post(`${this.apiUrl}?route=editUser`, userData, { headers });
+  }
+
+  changePassword(passwordData: { userid: number; new_password: string }): Observable<any> {
+    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+  
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error({ error: 'Missing token' });
+      });
+    }
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  
+    return this.http.post(`${this.apiUrl}?route=changePassword`, passwordData, { headers });
+  }
+
+  getRunnerApplications(): Observable<any> {
+    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+  
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error({ error: 'Missing token' });
+      });
+    }
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+  
+    return this.http.get(`${this.apiUrl}?route=getRunnerApplications`, { headers });
+  }
+
+  approveApplication(applicationData: { application_id: number; userid: number }): Observable<any> {
+    const token = localStorage.getItem('token');
+  
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error({ error: 'Missing token' });
+      });
+    }
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  
+    return this.http.post(`${this.apiUrl}?route=approveApplication`, applicationData, { headers });
+  }
+  
+  rejectApplication(applicationId: number): Observable<any> {
+    const token = localStorage.getItem('token');
+  
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error({ error: 'Missing token' });
+      });
+    }
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  
+    return this.http.post(`${this.apiUrl}?route=rejectApplication`, { application_id: applicationId }, { headers });
+  }
+
+
+
+
+  getRunnerTasks(): Observable<any> {
+    const token = localStorage.getItem('token');
+  
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error({ error: 'Missing token' });
+      });
+    }
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+  
+    return this.http.get(`${this.apiUrl}?route=getRunnerTasks`, { headers });
+  }
+  
+  getRunnerNotifications(): Observable<any> {
+    const token = localStorage.getItem('token');
+  
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error({ error: 'Missing token' });
+      });
+    }
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+  
+    return this.http.get(`${this.apiUrl}?route=getRunnerNotifications`, { headers });
+  }
+  
+  completeTask(taskId: number): Observable<any> {
+    const token = localStorage.getItem('token');
+  
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error({ error: 'Missing token' });
+      });
+    }
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  
+    return this.http.post(`${this.apiUrl}?route=completeTask`, { task_id: taskId }, { headers });
+  }
 
 
 

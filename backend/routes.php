@@ -1,6 +1,6 @@
 <?php
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE"); // Add DELETE here
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Content-Type: application/json");
 
@@ -45,10 +45,38 @@ switch ($requestUri) {
         require_once 'routes/post.php';
         applyAsRunner();
         break;
+    case 'getAllUsers':
+        require_once 'routes/get.php';
+        getAllUsers();
+        break;
         
+    case 'deleteUser':
+        require_once 'routes/post.php';
+        deleteUser();
+        break;
+
+    case 'editUser':
+        require_once 'routes/post.php';
+        editUser();
+        break;
+    case 'changePassword':
+        require_once 'routes/post.php';
+        changePassword();
+        break;    
+    case 'getRunnerApplications':
+        require_once 'routes/get.php';
+        getRunnerApplications();
+        break;
+    case 'approveApplication':
+        require_once 'routes/post.php';
+        approveApplication();
+        break;
+    case 'rejectApplication':
+        require_once 'routes/post.php';
+        rejectApplication();
+        break;
 
 
-        
         default:
         echo json_encode(["error" => "Invalid route"]);
         break;

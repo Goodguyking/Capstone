@@ -1,0 +1,111 @@
+<div class="user-management">
+    <h1>User Management</h1>
+  
+    <!-- Loading Indicator -->
+    <div *ngIf="loading" class="loading">
+      <p>Loading users...</p>
+    </div>
+  
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="error">
+      <p>{{ errorMessage }}</p>
+    </div>
+  
+    <!-- No Users Message -->
+    <div *ngIf="!loading && users.length === 0 && !errorMessage" class="no-users">
+      <p>No users found.</p>
+    </div>
+  
+    <!-- Users Table -->
+    <table *ngIf="!loading && users.length > 0" class="user-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Contact Number</th>
+          <th>Role</th>
+          <th>Location</th>
+          <th>Profile Picture</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.userid }}</td>
+          <td>{{ user.first_name }}</td>
+          <td>{{ user.last_name }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.contact_number }}</td>
+          <td>{{ user.role }}</td>
+          <td>{{ user.location }}</td>
+          <td>
+            <img [src]="user.profilepic" alt="Profile Picture" width="50" height="50">
+          </td>
+          <td>
+            <button (click)="openEditModal(user)" class="edit-btn">Edit</button>
+            <button (click)="deleteUser(user.userid)" class="delete-btn">Delete</button>
+            <button (click)="openChangePasswordModal(user)" class="change-password-btn">Change Password</button>
+
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+  <!-- Change Password Modal -->
+<div class="modal" *ngIf="isChangePasswordModalOpen">
+    <div class="modal-content">
+      <h2>Change Password</h2>
+      <form (ngSubmit)="changePassword()">
+        <label for="new_password">New Password</label>
+        <input id="new_password" [(ngModel)]="passwordData.new_password" name="new_password" type="password" class="form-input" required>
+  
+        <label for="confirm_password">Confirm Password</label>
+        <input id="confirm_password" [(ngModel)]="passwordData.confirm_password" name="confirm_password" type="password" class="form-input" required>
+  
+        <div class="modal-actions">
+          <button type="submit" class="save-btn">Save</button>
+          <button type="button" class="cancel-btn" (click)="closeChangePasswordModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+    <!-- Edit User Modal -->
+    <div class="modal" *ngIf="isEditModalOpen">
+      <div class="modal-content">
+        <h2>Edit User</h2>
+        <form (ngSubmit)="saveUser()">
+          <label for="first_name">First Name</label>
+          <input id="first_name" [(ngModel)]="selectedUser.first_name" name="first_name" class="form-input" required>
+  
+          <label for="last_name">Last Name</label>
+          <input id="last_name" [(ngModel)]="selectedUser.last_name" name="last_name" class="form-input" required>
+  
+          <label for="email">Email</label>
+          <input id="email" [(ngModel)]="selectedUser.email" name="email" class="form-input" required>
+  
+          <label for="contact_number">Contact Number</label>
+          <input id="contact_number" [(ngModel)]="selectedUser.contact_number" name="contact_number" class="form-input">
+  
+          <label for="role">Role</label>
+          <select id="role" [(ngModel)]="selectedUser.role" name="role" class="form-input">
+            <option value="admin">Admin</option>
+            <option value="user">User</option>
+            <option value="runner">Runner</option>
+          </select>
+  
+          <label for="location">Location</label>
+          <input id="location" [(ngModel)]="selectedUser.location" name="location" class="form-input">
+  
+          <div class="modal-actions">
+            <button type="submit" class="save-btn">Save</button>
+            <button type="button" class="cancel-btn" (click)="closeEditModal()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

@@ -228,6 +228,326 @@ function applyAsRunner() {
     $stmt->close();
 }
 
+function deleteUser() {
+    global $conn;
+
+    // Get the Authorization header
+    $headers = getallheaders();
+    if (!isset($headers['Authorization'])) {
+        echo json_encode(["error" => "Missing token"]);
+        exit;
+    }
+
+    // Verify the token
+    $token = str_replace("Bearer ", "", $headers['Authorization']);
+    $secretKey = 'your-secret-key';
+    $decodedPayload = verifyJWT($token, $secretKey);
+
+    if (!$decodedPayload || !isset($decodedPayload['uid'])) {
+        echo json_encode(["error" => "Invalid or expired token"]);
+        exit;
+    }
+
+    // Check if the user is an admin
+    $userid = intval($decodedPayload['uid']);
+    $stmt = $conn->prepare("SELECT role FROM users WHERE userid = ?");
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0 || $result->fetch_assoc()['role'] !== 'admin') {
+        echo json_encode(["error" => "Unauthorized"]);
+        exit;
+    }
+
+    // Get the user ID to delete
+    $userIdToDelete = intval($_GET['userid'] ?? 0);
+    if ($userIdToDelete === 0) {
+        echo json_encode(["error" => "Invalid user ID"]);
+        exit;
+    }
+
+    // Delete the user
+    $stmt = $conn->prepare("DELETE FROM users WHERE userid = ?");
+    $stmt->bind_param("i", $userIdToDelete);
+    if ($stmt->execute()) {
+        echo json_encode(["message" => "User deleted successfully"]);
+    } else {
+        echo json_encode(["error" => "Failed to delete user"]);
+    }
+
+    $stmt->close();
+}
+
+function editUser() {
+    global $conn;
+
+    // Check if the request method is POST
+    if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+        echo json_encode(["error" => "Invalid request method"]);
+        exit;
+    }
+
+    // Get the Authorization header
+    $headers = getallheaders();
+    if (!isset($headers['Authorization'])) {
+        echo json_encode(["error" => "Missing token"]);
+        exit;
+    }
+
+    // Verify the token
+    $token = str_replace("Bearer ", "", $headers['Authorization']);
+    $secretKey = 'your-secret-key';
+    $decodedPayload = verifyJWT($token, $secretKey);
+
+    if (!$decodedPayload || !isset($decodedPayload['uid'])) {
+        echo json_encode(["error" => "Invalid or expired token"]);
+        exit;
+    }
+
+    // Check if the user is an admin
+    $userid = intval($decodedPayload['uid']);
+    $stmt = $conn->prepare("SELECT role FROM users WHERE userid = ?");
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0 || $result->fetch_assoc()['role'] !== 'admin') {
+        echo json_encode(["error" => "Unauthorized"]);
+        exit;
+    }
+
+    // Get the JSON payload
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    if (!$data || !isset($data['userid'])) {
+        echo json_encode(["error" => "Invalid input data"]);
+        exit;
+    }
+
+    $userIdToEdit = intval($data['userid']);
+    $firstName = $data['first_name'] ?? null;
+    $lastName = $data['last_name'] ?? null;
+    $email = $data['email'] ?? null;
+    $contactNumber = $data['contact_number'] ?? null;
+    $role = $data['role'] ?? null;
+    $location = $data['location'] ?? null;
+
+    // Validate required fields
+    if (!$firstName || !$lastName || !$email || !$role) {
+        echo json_encode(["error" => "Missing required fields"]);
+        exit;
+    }
+
+    // Update the user's details in the database
+    $stmt = $conn->prepare("UPDATE users SET first_name = ?, last_name = ?, email = ?, contact_number = ?, role = ?, location = ? WHERE userid = ?");
+    $stmt->bind_param("ssssssi", $firstName, $lastName, $email, $contactNumber, $role, $location, $userIdToEdit);
+
+    if ($stmt->execute()) {
+        echo json_encode(["message" => "User updated successfully"]);
+    } else {
+        echo json_encode(["error" => "Failed to update user"]);
+    }
+
+    $stmt->close();
+}
+
+
+function changePassword() {
+    global $conn;
+
+    // Check if the request method is POST
+    if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+        echo json_encode(["error" => "Invalid request method"]);
+        exit;
+    }
+
+    // Get the Authorization header
+    $headers = getallheaders();
+    if (!isset($headers['Authorization'])) {
+        echo json_encode(["error" => "Missing token"]);
+        exit;
+    }
+
+    // Verify the token
+    $token = str_replace("Bearer ", "", $headers['Authorization']);
+    $secretKey = 'your-secret-key';
+    $decodedPayload = verifyJWT($token, $secretKey);
+
+    if (!$decodedPayload || !isset($decodedPayload['uid'])) {
+        echo json_encode(["error" => "Invalid or expired token"]);
+        exit;
+    }
+
+    // Check if the user is an admin
+    $userid = intval($decodedPayload['uid']);
+    $stmt = $conn->prepare("SELECT role FROM users WHERE userid = ?");
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0 || $result->fetch_assoc()['role'] !== 'admin') {
+        echo json_encode(["error" => "Unauthorized"]);
+        exit;
+    }
+
+    // Get the JSON payload
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    if (!$data || !isset($data['userid']) || !isset($data['new_password'])) {
+        echo json_encode(["error" => "Invalid input data"]);
+        exit;
+    }
+
+    $userIdToUpdate = intval($data['userid']);
+    $newPassword = password_hash($data['new_password'], PASSWORD_BCRYPT);
+
+    // Update the user's password in the database
+    $stmt = $conn->prepare("UPDATE users SET password = ? WHERE userid = ?");
+    $stmt->bind_param("si", $newPassword, $userIdToUpdate);
+
+    if ($stmt->execute()) {
+        echo json_encode(["message" => "Password updated successfully"]);
+    } else {
+        echo json_encode(["error" => "Failed to update password"]);
+    }
+
+    $stmt->close();
+}
+
+function approveApplication() {
+    global $conn;
+
+    // Check if the request method is POST
+    if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+        echo json_encode(["error" => "Invalid request method"]);
+        exit;
+    }
+
+    // Get the Authorization header
+    $headers = getallheaders();
+    if (!isset($headers['Authorization'])) {
+        echo json_encode(["error" => "Missing token"]);
+        exit;
+    }
+
+    // Verify the token
+    $token = str_replace("Bearer ", "", $headers['Authorization']);
+    $secretKey = 'your-secret-key';
+    $decodedPayload = verifyJWT($token, $secretKey);
+
+    if (!$decodedPayload || !isset($decodedPayload['uid'])) {
+        echo json_encode(["error" => "Invalid or expired token"]);
+        exit;
+    }
+
+    // Check if the user is an admin
+    $userid = intval($decodedPayload['uid']);
+    $stmt = $conn->prepare("SELECT role FROM users WHERE userid = ?");
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0 || $result->fetch_assoc()['role'] !== 'admin') {
+        echo json_encode(["error" => "Unauthorized"]);
+        exit;
+    }
+
+    // Get the JSON payload
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    if (!$data || !isset($data['application_id']) || !isset($data['userid'])) {
+        echo json_encode(["error" => "Invalid input data"]);
+        exit;
+    }
+
+    $applicationId = intval($data['application_id']);
+    $userId = intval($data['userid']);
+
+    // Update the application status to "approved"
+    $stmt = $conn->prepare("UPDATE runner_applications SET status = 'approved' WHERE application_id = ?");
+    $stmt->bind_param("i", $applicationId);
+
+    if ($stmt->execute()) {
+        // Update the user's role to "runner"
+        $stmt = $conn->prepare("UPDATE users SET role = 'runner' WHERE userid = ?");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+
+        echo json_encode(["message" => "Application approved and user role updated to runner"]);
+    } else {
+        echo json_encode(["error" => "Failed to approve application"]);
+    }
+
+    $stmt->close();
+}
+
+function rejectApplication() {
+    global $conn;
+
+    // Check if the request method is POST
+    if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+        echo json_encode(["error" => "Invalid request method"]);
+        exit;
+    }
+
+    // Get the Authorization header
+    $headers = getallheaders();
+    if (!isset($headers['Authorization'])) {
+        echo json_encode(["error" => "Missing token"]);
+        exit;
+    }
+
+    // Verify the token
+    $token = str_replace("Bearer ", "", $headers['Authorization']);
+    $secretKey = 'your-secret-key';
+    $decodedPayload = verifyJWT($token, $secretKey);
+
+    if (!$decodedPayload || !isset($decodedPayload['uid'])) {
+        echo json_encode(["error" => "Invalid or expired token"]);
+        exit;
+    }
+
+    // Check if the user is an admin
+    $userid = intval($decodedPayload['uid']);
+    $stmt = $conn->prepare("SELECT role FROM users WHERE userid = ?");
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0 || $result->fetch_assoc()['role'] !== 'admin') {
+        echo json_encode(["error" => "Unauthorized"]);
+        exit;
+    }
+
+    // Get the JSON payload
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    if (!$data || !isset($data['application_id'])) {
+        echo json_encode(["error" => "Invalid input data"]);
+        exit;
+    }
+
+    $applicationId = intval($data['application_id']);
+
+    // Update the application status to "rejected"
+    $stmt = $conn->prepare("UPDATE runner_applications SET status = 'rejected' WHERE application_id = ?");
+    $stmt->bind_param("i", $applicationId);
+
+    if ($stmt->execute()) {
+        echo json_encode(["message" => "Application rejected"]);
+    } else {
+        echo json_encode(["error" => "Failed to reject application"]);
+    }
+
+    $stmt->close();
+}
+
+
+
+
+
+
 
 
 ?>

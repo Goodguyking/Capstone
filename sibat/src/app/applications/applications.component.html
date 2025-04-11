@@ -1,0 +1,64 @@
+<div class="applications">
+    <h1>Runner Applications</h1>
+  
+    <!-- Loading Indicator -->
+    <div *ngIf="loading" class="loading">
+      <p>Loading applications...</p>
+    </div>
+  
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="error">
+      <p>{{ errorMessage }}</p>
+    </div>
+  
+    <!-- No Applications Message -->
+    <div *ngIf="!loading && applications.length === 0 && !errorMessage" class="no-applications">
+      <p>No applications found.</p>
+    </div>
+  
+    <!-- Applications Table -->
+    <table *ngIf="!loading && applications.length > 0" class="applications-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>User ID</th>
+          <th>Mode of Transport</th>
+          <th>Emergency Contact</th>
+          <th>Emergency Number</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let application of applications">
+          <td>{{ application.application_id }}</td>
+          <td>{{ application.userid }}</td>
+          <td>{{ application.mode_of_transport }}</td>
+          <td>{{ application.emergency_contact_person }}</td>
+          <td>{{ application.emergency_contact_number }}</td>
+          <td>{{ application.status }}</td>
+          <td>
+            <button class="approve-btn" (click)="approveApplication(application.application_id, application.userid)">Approve</button>
+            <button class="reject-btn" (click)="rejectApplication(application.application_id)">Reject</button>
+            <button class="documents-btn" (click)="viewDocuments(application)">View Documents</button>
+          </td>
+          
+          <!-- Documents Modal -->
+          <div class="modal" *ngIf="isDocumentsModalOpen">
+            <div class="modal-content">
+              <h2>Uploaded Documents</h2>
+              <ul>
+                <li><a [href]="selectedApplication.valid_id_1_url" target="_blank">Valid ID 1</a></li>
+                <li><a [href]="selectedApplication.valid_id_2_url" target="_blank">Valid ID 2</a></li>
+                <li><a [href]="selectedApplication.police_clearance_url" target="_blank">Police Clearance</a></li>
+                <li><a [href]="selectedApplication.barangay_clearance_url" target="_blank">Barangay Clearance</a></li>
+              </ul>
+              <div class="modal-actions">
+                <button class="close-btn" (click)="closeDocumentsModal()">Close</button>
+              </div>
+            </div>
+          </div>
+        </tr>
+      </tbody>
+    </table>
+  </div>

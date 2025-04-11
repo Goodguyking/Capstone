@@ -63,7 +63,7 @@ export class LoginComponent {
           case 'user':
             this.router.navigate(['/home']);
             break;
-          case 'seller':
+          case 'runner':
             this.router.navigate(['/runner']);
             break;
           case 'admin':

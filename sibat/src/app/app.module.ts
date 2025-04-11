@@ -36,6 +36,10 @@ import { VerifyUserComponent } from './verify-user/verify-user.component';
 import { LayoutComponent } from './layout/layout.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RegisterRunnerComponent } from './register-runner/register-runner.component';
+import { AdminComponent } from './admin/admin.component';
+import { UserManagementComponent } from './user-management/user-management.component';
+import { RunnerComponent } from './runner/runner.component';
+import { ApplicationsComponent } from './applications/applications.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +50,10 @@ import { RegisterRunnerComponent } from './register-runner/register-runner.compo
     LayoutComponent,
     ProfileComponent,
     RegisterRunnerComponent,
+    AdminComponent,
+    UserManagementComponent,
+    RunnerComponent,
+    ApplicationsComponent,
   ],
   imports: [
     BrowserModule,

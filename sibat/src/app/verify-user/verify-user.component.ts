@@ -34,7 +34,7 @@ export class VerifyUserComponent {
           this.dialogRef.close(); // Close the modal
 
           setTimeout(() => {
-            this.router.navigate(['/login']); // Redirect to login page
+            window.location.reload(); // Redirect to login page
           }, 2000); // Delay redirection for user feedback
         } else {
           this.snackBar.open(response.error || 'Invalid verification code', 'Close', { duration: 3000 });

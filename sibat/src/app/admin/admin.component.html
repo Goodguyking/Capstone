@@ -1,0 +1,28 @@
+<div class="admin-dashboard">
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="navbar-brand">
+        <h1>Admin Dashboard</h1>
+      </div>
+      <div class="navbar-links">
+        <a href="#" (click)="logout()">Logout</a>
+      </div>
+    </nav>
+  
+    <!-- Sidebar and Main Content -->
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <ul>
+          <li><a routerLink="/admin/users" routerLinkActive="active">User Management</a></li>
+          <li><a routerLink="/admin/applications" routerLinkActive="active">Application</a></li>
+          <li><a routerLink="/admin/settings" routerLinkActive="active">Settings</a></li>
+        </ul>
+      </aside>
+  
+      <!-- Main Content -->
+      <main class="main-content">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </div>

@@ -1,0 +1,46 @@
+<div class="runner-dashboard">
+    <h1>Runner Dashboard</h1>
+    <p>Welcome to your dashboard! Here you can manage your tasks and view important updates.</p>
+  
+    <!-- Quick Links Section -->
+    <div class="quick-links">
+      <h2>Quick Links</h2>
+      <ul>
+        <li><a routerLink="/tasks">View Your Tasks</a></li>
+        <li><a routerLink="/notifications">Notifications</a></li>
+        <li><a routerLink="/profile">Update Your Profile</a></li>
+      </ul>
+    </div>
+  
+    <!-- Tasks Section -->
+    <div class="tasks-section">
+      <h2>Your Tasks</h2>
+      <div *ngIf="tasks.length > 0; else noTasks">
+        <ul>
+          <li *ngFor="let task of tasks">
+            <strong>{{ task.title }}</strong>
+            <p>{{ task.description }}</p>
+            <button class="complete-btn" (click)="completeTask(task.id)">Mark as Complete</button>
+          </li>
+        </ul>
+      </div>
+      <ng-template #noTasks>
+        <p>No tasks assigned yet.</p>
+      </ng-template>
+    </div>
+  
+    <!-- Notifications Section -->
+    <div class="notifications-section">
+      <h2>Notifications</h2>
+      <div *ngIf="notifications.length > 0; else noNotifications">
+        <ul>
+          <li *ngFor="let notification of notifications">
+            <p>{{ notification.message }}</p>
+          </li>
+        </ul>
+      </div>
+      <ng-template #noNotifications>
+        <p>No notifications at the moment.</p>
+      </ng-template>
+    </div>
+  </div>
