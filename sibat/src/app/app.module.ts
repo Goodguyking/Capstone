@@ -40,6 +40,9 @@ import { AdminComponent } from './admin/admin.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { RunnerComponent } from './runner/runner.component';
 import { ApplicationsComponent } from './applications/applications.component';
+import { TasksComponent } from './tasks/tasks.component';
+import { PostComponent } from './post/post.component';
+import { ChatComponent } from './chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +57,9 @@ import { ApplicationsComponent } from './applications/applications.component';
     UserManagementComponent,
     RunnerComponent,
     ApplicationsComponent,
+    TasksComponent,
+    PostComponent,
+    ChatComponent,
   ],
   imports: [
     BrowserModule,

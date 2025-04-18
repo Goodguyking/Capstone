@@ -278,6 +278,130 @@ export class DataService {
   }
 
 
+  createErrand(errandData: {
+    collecting_location: string;
+    task_description: string;
+    tip: number;
+    delivery_location: string;
+  }): Observable<any> {
+    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+  
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error({ error: 'Missing token' });
+      });
+    }
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+  
+    return this.http.post(`${this.apiUrl}?route=createErrand`, errandData, { headers });
+  }
+
+
+  checkErrandStatus(errandId: number): Observable<any> {
+    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+  
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error({ error: 'Missing token' });
+      });
+    }
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+  
+    return this.http.get(`${this.apiUrl}?route=checkErrandStatus&errand_id=${errandId}`, { headers });
+  }
+
+  getErrands(): Observable<any> {
+    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+  
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error({ error: 'Missing token' });
+      });
+    }
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+  
+    return this.http.get(`${this.apiUrl}?route=getErrands`, { headers });
+  }
+
+  acceptErrand(errandId: number, runnerId: number): Observable<any> {
+    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+  
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error({ error: 'Missing token' });
+      });
+    }
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+  
+    return this.http.post(`${this.apiUrl}?route=acceptErrand`, { errand_id: errandId, runner_id: runnerId }, { headers });
+  }
+
+
+  fetchMessages(chatId: number): Observable<{ message_id: number; sender: string; content: string; type: string }[]> {
+    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+  
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error({ error: 'Missing token' });
+      });
+    }
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+  
+    return this.http.get<{ message_id: number; sender: string; content: string; type: string }[]>(
+      `${this.apiUrl}?route=getMessages&chatId=${chatId}`,
+      { headers }
+    );
+  }
+
+ 
+  fetchChatHistory(): Observable<{ chat_id: number; name: string }[]> {
+    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+  
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error({ error: 'Missing token' });
+      });
+    }
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+  
+    return this.http.get<{ chat_id: number; name: string }[]>(
+      `${this.apiUrl}?route=getChatHistory`,
+      { headers }
+    );
+  }
+
+
+
+
+
+
+
+
+
 
 
 

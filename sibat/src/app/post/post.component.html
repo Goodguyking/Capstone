@@ -1,0 +1,54 @@
+<div class="post-container">
+  <h1>Post Your Errand</h1>
+  <mat-horizontal-stepper [linear]="true" #stepper>
+    <!-- Step 1: Collect Details -->
+    <mat-step [stepControl]="detailsForm">
+      <form [formGroup]="detailsForm">
+        <ng-template matStepLabel>Errand Details</ng-template>
+        <!-- Collecting Location -->
+        <div class="form-group">
+          <label for="collectingLocation">Collecting Location</label>
+          <input type="text" id="collectingLocation" formControlName="collectingLocation" required />
+        </div>
+
+        <!-- What to Do -->
+        <div class="form-group">
+          <label for="taskDescription">What to Do</label>
+          <textarea id="taskDescription" formControlName="taskDescription" required></textarea>
+        </div>
+
+        <!-- Tip -->
+        <div class="form-group">
+          <label for="tip">Tip (₱)</label>
+          <input type="number" id="tip" formControlName="tip" required />
+        </div>
+
+        <!-- Delivery Location -->
+        <div class="form-group">
+          <label for="deliveryLocation">Delivery Location</label>
+          <input type="text" id="deliveryLocation" formControlName="deliveryLocation" required />
+        </div>
+
+        <div>
+          <button mat-button matStepperNext [disabled]="detailsForm.invalid">Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 2: Summary -->
+    <mat-step>
+      <ng-template matStepLabel>Summary</ng-template>
+      <div class="summary">
+        <p>Base Price: ₱<span>{{ basePrice }}</span></p>
+        <p>Service Charge (5%): ₱<span>{{ serviceCharge }}</span></p>
+        <p>Delivery Charge: ₱<span>{{ deliveryCharge }}</span></p>
+        <p><strong>Total Price: ₱<span>{{ totalPrice }}</span></strong></p>
+      </div>
+
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button (click)="submitErrand()">Confirm</button>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</div>

@@ -1,62 +1,142 @@
-.runner-dashboard {
-    padding: 2rem;
-    font-family: Arial, sans-serif;
+/* General Layout */
+.sidenav-container {
+  height: 100vh;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #F6DED8; /* Light pink background */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Pushes logout to the bottom */
+  padding-top: 20px;
+}
+
+.mat-nav-list {
+  flex-grow: 1;
+}
+
+.mat-list-item {
+  font-weight: 500;
+  font-size: 16px;
+  color: #B82132; /* Deep red */
+  transition: background 0.3s, color 0.3s;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 5px;
+}
+
+.mat-list-item:hover {
+  background-color: #D2665A;
+  color: white;
+}
+
+/* Active Link */
+.active-link {
+  font-weight: bold;
+  color: #B82132 !important;
+}
+
+/* Logout Button */
+.logout-container {
+  margin-top: auto;
+  padding: 10px;
+}
+
+.logout-button {
+  color: white !important;
+  background-color: #B82132 !important;
+  font-weight: bold;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 0px;
+}
+
+.logout-button:hover {
+  background-color: #D2665A !important;
+}
+
+/* Toolbar */
+.navbar {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  height: 64px; /* Standard toolbar height */
+}
+
+.logo-container {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 150px; /* Adjust logo size */
+  height: auto;
+}
+
+/* Main Content */
+.content-container {
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  margin: 1rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-top: 80px; /* Add margin to prevent overlap with the toolbar */
+}
+
+/* Background Animation */
+.spear-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 9999; /* Increased z-index to be on top */
+  pointer-events: none;
+}
+
+.spear {
+  position: absolute;
+  width: 200px;
+  height: auto;
+  opacity: 0.3;
+  animation: panSpear 8s linear infinite;
+}
+
+@keyframes panSpear {
+  0% {
+    transform: translateX(-1000%);
   }
-  
-  .runner-dashboard h1 {
-    color: #2c3e50;
+  100% {
+    transform: translateX(1000%);
   }
-  
-  .runner-dashboard p {
-    color: #7f8c8d;
-    font-size: 1.2rem;
+}
+
+.spear:nth-child(1) {
+  top: -1%;
+  animation-duration: 6s;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sidenav-container {
+    flex-direction: column;
   }
-  
-  .quick-links {
-    margin-top: 2rem;
+
+  .sidebar {
+    width: 100%;
+    box-shadow: none;
   }
-  
-  .quick-links h2 {
-    color: #34495e;
-    font-size: 1.5rem;
+
+  .content-container {
+    margin: 0;
+    border-radius: 0;
+    margin-top: 64px; /* Adjust for smaller screens */
   }
-  
-  .quick-links ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .quick-links ul li {
-    margin-bottom: 0.5rem;
-  }
-  
-  .quick-links ul li a {
-    color: #3498db;
-    text-decoration: none;
-    font-size: 1.1rem;
-  }
-  
-  .quick-links ul li a:hover {
-    text-decoration: underline;
-  }
-  
-  .tasks-section, .notifications-section {
-    margin-top: 2rem;
-  }
-  
-  .tasks-section h2, .notifications-section h2 {
-    color: #34495e;
-  }
-  
-  .complete-btn {
-    background-color: #2ecc71;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .complete-btn:hover {
-    background-color: #27ae60;
-  }
+}

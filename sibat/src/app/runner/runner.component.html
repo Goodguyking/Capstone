@@ -1,46 +1,37 @@
-<div class="runner-dashboard">
-    <h1>Runner Dashboard</h1>
-    <p>Welcome to your dashboard! Here you can manage your tasks and view important updates.</p>
-  
-    <!-- Quick Links Section -->
-    <div class="quick-links">
-      <h2>Quick Links</h2>
-      <ul>
-        <li><a routerLink="/tasks">View Your Tasks</a></li>
-        <li><a routerLink="/notifications">Notifications</a></li>
-        <li><a routerLink="/profile">Update Your Profile</a></li>
-      </ul>
+<mat-sidenav-container class="sidenav-container">
+  <!-- Sidebar -->
+  <mat-sidenav #sidenav mode="side" opened class="sidebar">
+    <mat-nav-list>
+      <a mat-list-item routerLink="/runner/tasks" routerLinkActive="active-link">Task Management</a>
+      <a mat-list-item (click)="navigateToFirstChat()" routerLinkActive="active-link">Chat</a>
+      <a mat-list-item routerLink="/runner/settings" routerLinkActive="active-link">Settings</a>
+    </mat-nav-list>
+
+    <!-- Logout Button at the Bottom -->
+    <div class="logout-container">
+      <a mat-list-item class="logout-button" (click)="logout()">Logout</a>
     </div>
-  
-    <!-- Tasks Section -->
-    <div class="tasks-section">
-      <h2>Your Tasks</h2>
-      <div *ngIf="tasks.length > 0; else noTasks">
-        <ul>
-          <li *ngFor="let task of tasks">
-            <strong>{{ task.title }}</strong>
-            <p>{{ task.description }}</p>
-            <button class="complete-btn" (click)="completeTask(task.id)">Mark as Complete</button>
-          </li>
-        </ul>
-      </div>
-      <ng-template #noTasks>
-        <p>No tasks assigned yet.</p>
-      </ng-template>
+  </mat-sidenav>
+
+  <!-- Main Content -->
+  <mat-sidenav-content>
+    <!-- Toolbar -->
+    <mat-toolbar class="navbar">
+      <button mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span class="logo-container">
+        <img src="assets/Sibat-Runner.png" alt="Logo" class="logo" />
+      </span>
+    </mat-toolbar>
+
+    <!-- Dynamic Content -->
+    <div class="content-container">
+      <router-outlet></router-outlet>
     </div>
-  
-    <!-- Notifications Section -->
-    <div class="notifications-section">
-      <h2>Notifications</h2>
-      <div *ngIf="notifications.length > 0; else noNotifications">
-        <ul>
-          <li *ngFor="let notification of notifications">
-            <p>{{ notification.message }}</p>
-          </li>
-        </ul>
-      </div>
-      <ng-template #noNotifications>
-        <p>No notifications at the moment.</p>
-      </ng-template>
-    </div>
-  </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+<div class="spear-container">
+  <img src="assets/BG.png" class="spear" />
+</div>

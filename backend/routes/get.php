@@ -187,6 +187,139 @@ function getRunnerApplications() {
 }
 
 
+function checkErrandStatus() {
+    global $conn;
+
+    // Get the errand ID from the request
+    $errandId = intval($_GET['errand_id'] ?? 0);
+
+    if ($errandId === 0) {
+        echo json_encode(["error" => "Invalid errand ID"]);
+        exit;
+    }
+
+    // Query the database for the errand's status
+    $stmt = $conn->prepare("SELECT is_accepted FROM errands WHERE errand_id = ?");
+    $stmt->bind_param("i", $errandId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        echo json_encode(["is_accepted" => $row['is_accepted']]);
+    } else {
+        echo json_encode(["error" => "Errand not found"]);
+    }
+
+    $stmt->close();
+}
+
+
+
+function getErrands() {
+    global $conn;
+
+    // Query to fetch all errands
+    $result = $conn->query("SELECT * FROM errands ORDER BY created_at DESC");
+
+    $errands = [];
+    while ($row = $result->fetch_assoc()) {
+        $errands[] = $row;
+    }
+
+    echo json_encode($errands);
+}
+
+ 
+function getChatHistory() {
+    global $conn;
+
+    // Get the logged-in user's ID from the token
+    $headers = getallheaders();
+    if (!isset($headers['Authorization'])) {
+        echo json_encode(["error" => "Missing token"]);
+        exit;
+    }
+
+    $token = str_replace("Bearer ", "", $headers['Authorization']);
+    $decodedPayload = verifyJWT($token, 'your-secret-key');
+    if (!$decodedPayload || !isset($decodedPayload['uid'])) {
+        echo json_encode(["error" => "Invalid or expired token"]);
+        exit;
+    }
+
+    $userId = intval($decodedPayload['uid']);
+
+    // Fetch chat history for the user
+    $stmt = $conn->prepare("
+        SELECT c.id AS chat_id, 
+               CASE 
+                   WHEN c.runner_id = ? THEN u2.first_name 
+                   ELSE u1.first_name 
+               END AS name
+        FROM chats c
+        JOIN users u1 ON c.runner_id = u1.userid
+        JOIN users u2 ON c.user_id = u2.userid
+        WHERE c.runner_id = ? OR c.user_id = ?
+    ");
+    $stmt->bind_param("iii", $userId, $userId, $userId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $chatHistory = [];
+    while ($row = $result->fetch_assoc()) {
+        $chatHistory[] = $row;
+    }
+
+    echo json_encode($chatHistory);
+    $stmt->close();
+}
+
+ 
+function getMessages() {
+    global $conn;
+
+    // Get the chat ID from the query parameters
+    $chatId = intval($_GET['chatId'] ?? 0);
+    if ($chatId === 0) {
+        echo json_encode(["error" => "Invalid chat ID"]);
+        exit;
+    }
+
+    // Fetch messages for the chat
+    $stmt = $conn->prepare("
+        SELECT m.id AS message_id, 
+               m.sender_id, 
+               u.first_name AS sender, 
+               m.content, 
+               m.type, 
+               m.created_at
+        FROM messages m
+        JOIN users u ON m.sender_id = u.userid
+        WHERE m.chat_id = ?
+        ORDER BY m.created_at ASC
+    ");
+    $stmt->bind_param("i", $chatId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $messages = [];
+    while ($row = $result->fetch_assoc()) {
+        $messages[] = $row;
+    }
+
+    echo json_encode($messages);
+    $stmt->close();
+}
+
+
+
+
+
+
+
+
+
 
 
 

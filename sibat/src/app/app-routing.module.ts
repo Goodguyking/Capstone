@@ -11,6 +11,9 @@ import { AdminComponent } from './admin/admin.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { ApplicationsComponent } from './applications/applications.component';
 import { RunnerComponent } from './runner/runner.component';
+import { TasksComponent } from './tasks/tasks.component';
+import { PostComponent } from './post/post.component';
+import { ChatComponent } from './chat/chat.component';
 
 const routes: Routes = [
   // Redirect root to login
@@ -20,17 +23,16 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'verify-user', component: VerifyUserComponent },
   { path: 'registration-runner', component: RegisterRunnerComponent },
+  { path: 'post', component: PostComponent },
 
+  // Runner routes
+  { path: 'runner', component: RunnerComponent, canActivate: [AuthGuard], children: [
+    { path: '', redirectTo: 'tasks', pathMatch: 'full' },
+    { path: 'tasks', component: TasksComponent },
+    { path: 'chat/:chatId', component: ChatComponent },
+  ] },
 
-  { path: 'runner', component: RunnerComponent },
-  // Other routes...
-
-
-
-
-
-  //admin routes
-
+  // Admin routes
   {
     path: 'admin',
     component: AdminComponent,
@@ -38,12 +40,8 @@ const routes: Routes = [
     children: [
       { path: 'users', component: UserManagementComponent },
       { path: 'applications', component: ApplicationsComponent },
-      // { path: 'settings', component: SettingsComponent },
     ]
   },
-
-
-
 
   // Protected routes
   {
@@ -53,6 +51,8 @@ const routes: Routes = [
     children: [
       { path: 'home', component: HomeComponent },
       { path: 'profile', component: ProfileComponent },
+      { path: 'chat', component: ChatComponent }, // Add ChatComponent here
+
     ]
   },
 

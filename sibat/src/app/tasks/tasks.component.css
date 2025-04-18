@@ -1,0 +1,64 @@
+.tasks-container {
+    margin: 20px;
+  }
+  
+  .errand-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .card-header h3 {
+    margin: 0;
+    color: #333;
+  }
+  
+  .card-header p {
+    margin: 4px 0;
+    color: #555;
+  }
+  
+  .card-header button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .card-header button:hover {
+    background-color: #0056b3;
+  }
+  
+  .card-details {
+    margin-top: 16px;
+    padding: 8px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+  }
+  
+  .card-details p {
+    margin: 4px 0;
+  }
+  
+  .card-details button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .card-details button:hover {
+    background-color: #218838;
+  }

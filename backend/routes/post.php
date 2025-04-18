@@ -543,6 +543,164 @@ function rejectApplication() {
     $stmt->close();
 }
 
+ 
+function createErrand() {
+    global $conn;
+
+    // Check if the request method is POST
+    if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+        echo json_encode(["error" => "Invalid request method"]);
+        exit;
+    }
+
+    // Get the Authorization header
+    $headers = getallheaders();
+    if (!isset($headers['Authorization'])) {
+        echo json_encode(["error" => "Missing token"]);
+        exit;
+    }
+
+    // Verify the token
+    $token = str_replace("Bearer ", "", $headers['Authorization']);
+    $secretKey = 'your-secret-key';
+    $decodedPayload = verifyJWT($token, $secretKey);
+
+    if (!$decodedPayload || !isset($decodedPayload['uid'])) {
+        echo json_encode(["error" => "Invalid or expired token"]);
+        exit;
+    }
+
+    $userid = intval($decodedPayload['uid']);
+
+    // Get the JSON payload
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    if (!$data) {
+        echo json_encode(["error" => "Invalid input data"]);
+        exit;
+    }
+
+    // Extract data from the payload
+    $collectingLocation = $data['collecting_location'] ?? null;
+    $taskDescription = $data['task_description'] ?? null;
+    $tip = floatval($data['tip'] ?? 0);
+    $deliveryLocation = $data['delivery_location'] ?? null;
+    $basePrice = 100; // Example base price
+    $serviceCharge = $basePrice * 0.05; // 5% service charge
+    $deliveryCharge = 50; // Example delivery charge
+    $totalPrice = $basePrice + $serviceCharge + $deliveryCharge + $tip;
+
+    // Validate required fields
+    if (!$collectingLocation || !$taskDescription || !$deliveryLocation) {
+        echo json_encode(["error" => "Missing required fields"]);
+        exit;
+    }
+
+    // Insert the errand into the database
+    $stmt = $conn->prepare("
+        INSERT INTO errands 
+        (userid, collecting_location, task_description, tip, delivery_location, base_price, service_charge, delivery_charge, total_price) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ");
+    $stmt->bind_param(
+        "issdssddd",
+        $userid,
+        $collectingLocation,
+        $taskDescription,
+        $tip,
+        $deliveryLocation,
+        $basePrice,
+        $serviceCharge,
+        $deliveryCharge,
+        $totalPrice
+    );
+
+    if ($stmt->execute()) {
+        echo json_encode(["message" => "Errand created successfully", "errand_id" => $conn->insert_id]);
+    } else {
+        echo json_encode(["error" => "Failed to create errand"]);
+    }
+
+    $stmt->close();
+}
+
+
+
+
+function acceptErrand() {
+    global $conn;
+
+    // Check if the request method is POST
+    if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+        echo json_encode(["error" => "Invalid request method"]);
+        exit;
+    }
+
+    // Get the Authorization header
+    $headers = getallheaders();
+    if (!isset($headers['Authorization'])) {
+        echo json_encode(["error" => "Missing token"]);
+        exit;
+    }
+
+    // Verify the token
+    $token = str_replace("Bearer ", "", $headers['Authorization']);
+    $secretKey = 'your-secret-key';
+    $decodedPayload = verifyJWT($token, $secretKey);
+
+    if (!$decodedPayload || !isset($decodedPayload['uid'])) {
+        echo json_encode(["error" => "Invalid or expired token"]);
+        exit;
+    }
+
+    $runnerId = intval($decodedPayload['uid']); // Extract runner ID from the token
+    $data = json_decode(file_get_contents("php://input"), true);
+    $errandId = intval($data['errand_id'] ?? 0);
+
+    if ($errandId === 0 || $runnerId === 0) {
+        echo json_encode(["error" => "Invalid errand ID or runner ID"]);
+        exit;
+    }
+
+    // Update the errand's status and assign the runner
+    $stmt = $conn->prepare("UPDATE errands SET is_accepted = 1, runner_id = ? WHERE errand_id = ?");
+    $stmt->bind_param("ii", $runnerId, $errandId);
+
+    if ($stmt->execute()) {
+        // Fetch the errand poster's user ID
+        $stmt = $conn->prepare("SELECT userid FROM errands WHERE errand_id = ?");
+        $stmt->bind_param("i", $errandId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $errandPoster = $result->fetch_assoc()['userid'];
+
+        // Check if a chat already exists between the runner and the errand poster
+        $stmt = $conn->prepare("SELECT id FROM chats WHERE (runner_id = ? AND user_id = ?) OR (runner_id = ? AND user_id = ?)");
+        $stmt->bind_param("iiii", $runnerId, $errandPoster, $errandPoster, $runnerId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            // Chat already exists
+            $chatId = $result->fetch_assoc()['id'];
+        } else {
+            // Create a new chat
+            $stmt = $conn->prepare("INSERT INTO chats (runner_id, user_id) VALUES (?, ?)");
+            $stmt->bind_param("ii", $runnerId, $errandPoster);
+            $stmt->execute();
+            $chatId = $conn->insert_id;
+        }
+
+        echo json_encode(["message" => "Errand accepted successfully", "chat_id" => $chatId]);
+    } else {
+        echo json_encode(["error" => "Failed to accept errand"]);
+    }
+
+    $stmt->close();
+}
+
+
+
 
 
 

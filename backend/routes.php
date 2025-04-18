@@ -76,6 +76,36 @@ switch ($requestUri) {
         rejectApplication();
         break;
 
+    case 'createErrand':
+        require_once 'routes/post.php';
+        createErrand();
+        break;
+    case 'checkErrandStatus':
+        require_once 'routes/get.php';
+        checkErrandStatus();
+        break;
+    case 'getErrands':
+        require_once 'routes/get.php';
+        getErrands();
+        break;        
+    case 'acceptErrand':
+        require_once 'routes/post.php';
+        acceptErrand();
+        break;
+        
+    case 'getChatHistory':
+        require_once 'routes/get.php';
+        getChatHistory();
+        break;
+        
+    case 'getMessages':
+        require_once 'routes/get.php';
+        getMessages();
+        break;
+
+
+
+        
 
         default:
         echo json_encode(["error" => "Invalid route"]);
