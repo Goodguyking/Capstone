@@ -276,7 +276,7 @@ function getChatHistory() {
 }
 
  
-function getMessages() {
+ function getMessages() {
     global $conn;
 
     // Get the chat ID from the query parameters
@@ -288,27 +288,27 @@ function getMessages() {
 
     // Fetch messages for the chat
     $stmt = $conn->prepare("
-        SELECT m.id AS message_id, 
-               m.sender_id, 
-               u.first_name AS sender, 
-               m.content, 
-               m.type, 
-               m.created_at
-        FROM messages m
-        JOIN users u ON m.sender_id = u.userid
-        WHERE m.chat_id = ?
-        ORDER BY m.created_at ASC
-    ");
+    SELECT m.id AS message_id, 
+           m.sender_id, 
+           u.first_name AS sender, 
+           m.content, 
+           m.type, 
+           m.created_at
+    FROM messages m
+    JOIN users u ON m.sender_id = u.userid
+    WHERE m.chat_id = ?
+    ORDER BY m.created_at ASC
+");
     $stmt->bind_param("i", $chatId);
     $stmt->execute();
     $result = $stmt->get_result();
 
     $messages = [];
     while ($row = $result->fetch_assoc()) {
-        $messages[] = $row;
+        $messages[] = $row; // Ensure sender_id and sender (first_name) are included
     }
 
-    echo json_encode($messages);
+    echo json_encode($messages); // Return the messages as JSON
     $stmt->close();
 }
 

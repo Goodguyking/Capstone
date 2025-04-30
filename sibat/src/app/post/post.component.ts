@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataService } from '../services/data.service';
+import { Router } from '@angular/router'; // Import Router
 import Swal from 'sweetalert2';
 
 @Component({
@@ -16,7 +17,11 @@ export class PostComponent {
   deliveryCharge: number = 50; // Example delivery charge
   totalPrice: number = 0;
 
-  constructor(private fb: FormBuilder, private dataService: DataService) {
+  constructor(
+    private fb: FormBuilder,
+    private dataService: DataService,
+    private router: Router // Inject Router
+  ) {
     this.detailsForm = this.fb.group({
       collectingLocation: ['', Validators.required],
       taskDescription: ['', Validators.required],
@@ -25,28 +30,7 @@ export class PostComponent {
     });
   }
 
-  calculateTotal() {
-    const tip = this.detailsForm.get('tip')?.value || 0;
-    this.serviceCharge = this.basePrice * 0.05; // 5% service charge
-    this.totalPrice = this.basePrice + this.serviceCharge + this.deliveryCharge + tip;
-  }
-
-  proceedToSummary() {
-    if (this.detailsForm.invalid) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Please fill out all required fields.',
-      });
-      return;
-    }
-
-    this.calculateTotal();
-    const stepper = document.querySelector('mat-horizontal-stepper');
-    if (stepper) {
-      (stepper as any).selectedIndex = 1; // Move to Step 2
-    }
-  }
+  // ...existing methods...
 
   submitErrand() {
     const errandData = {
@@ -55,6 +39,13 @@ export class PostComponent {
       tip: this.detailsForm.get('tip')?.value,
       delivery_location: this.detailsForm.get('deliveryLocation')?.value,
     };
+  
+    // Calculate the total price
+    this.totalPrice =
+      this.basePrice +
+      this.serviceCharge +
+      this.deliveryCharge +
+      (errandData.tip || 0);
   
     this.dataService.createErrand(errandData).subscribe(
       (response: any) => {
@@ -84,18 +75,16 @@ export class PostComponent {
                   if (statusResponse && statusResponse.is_accepted === 1) {
                     clearInterval(pollingInterval); // Stop polling
   
+                    const runnerName = statusResponse.runner_name; // Assuming the API returns the runner's name
+  
                     Swal.fire({
                       icon: 'info',
                       title: 'Runner Found!',
-                      text: 'A runner has accepted your errand. You will be notified shortly.',
+                      text: `A runner (${runnerName}) has accepted your errand. You will be notified shortly.`,
                       confirmButtonText: 'OK',
                     }).then(() => {
-                      // Reset the form and navigate back to Step 1
-                      this.detailsForm.reset();
-                      const stepper = document.querySelector('mat-horizontal-stepper');
-                      if (stepper) {
-                        (stepper as any).selectedIndex = 0;
-                      }
+                      // Navigate to the chat page
+                      this.router.navigate(['/chat']); // Replace '/chat' with your chat route
                     });
                   }
                 },

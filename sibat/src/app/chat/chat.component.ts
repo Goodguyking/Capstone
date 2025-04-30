@@ -1,4 +1,11 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import {
+  Component,
+  ViewEncapsulation,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { io } from 'socket.io-client';
 import { DataService } from '../services/data.service';
 import { ActivatedRoute } from '@angular/router';
@@ -8,25 +15,39 @@ import { jwtDecode } from 'jwt-decode';
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css'],
+  encapsulation: ViewEncapsulation.None, // Disable encapsulation
 })
 export class ChatComponent implements OnInit, OnDestroy {
   chatHistory: { id: number; name: string }[] = [];
   selectedChat: { id: number; name: string } | null = null;
-  messages: { sender: string; content: string; type: string }[] = [];
+  messages: { sender: string; senderId: number; content: string; type: string }[] = [];
   newMessage: string = '';
+  currentUser: string = '';
+  currentUserId: number | null = null;
+
   private socket: any;
 
   @ViewChild('chatContainer') chatContainer!: ElementRef;
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
+
+
+  isSender(senderId: number): boolean {
+    return senderId === this.currentUserId;
+  }
   ngOnInit(): void {
     this.initializeSocketConnection();
-
-    // Fetch chat history
     this.fetchChatHistory();
 
-    // Get the chatId from the route and fetch messages
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedToken: any = jwtDecode(token);
+      this.currentUser = decodedToken.name || decodedToken.username || '';
+      this.currentUserId = decodedToken.uid || decodedToken.userid || null;
+      console.log('Current user:', this.currentUser, 'ID:', this.currentUserId);
+    }
+
     this.route.params.subscribe((params) => {
       const chatId = +params['chatId'];
       if (chatId) {
@@ -42,17 +63,17 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   initializeSocketConnection() {
-    this.socket = io('http://localhost:3000'); // Connect to the WebSocket server
-
-    // Listen for real-time messages
+    this.socket = io('http://localhost:3000');
+  
     this.socket.on('receiveMessage', (data: any) => {
       if (this.selectedChat && data.chatId === this.selectedChat.id) {
         this.messages.push({
           sender: data.sender,
+          senderId: data.senderId,
           content: data.content,
           type: data.type,
         });
-        this.scrollToLatestMessage(); // Scroll to the latest message
+        this.scrollToLatestMessage();
       }
     });
   }
@@ -74,15 +95,20 @@ export class ChatComponent implements OnInit, OnDestroy {
   selectChat(chat: { id: number; name: string }) {
     this.selectedChat = chat;
     this.fetchMessages(chat.id);
-
-    // Join the chat room
     this.socket.emit('joinChat', chat.id);
   }
 
   fetchMessages(chatId: number) {
     this.dataService.fetchMessages(chatId).subscribe(
       (response) => {
-        this.messages = response;
+        this.messages = response.map((msg: any) => ({
+          message_id: msg.message_id,
+          senderId: msg.sender_id, // Map senderId from the backend
+          sender: msg.sender, // Map sender's first name
+          content: msg.content,
+          type: msg.type,
+          created_at: msg.created_at,
+        }));
         this.scrollToLatestMessage();
       },
       (error) => {
@@ -92,37 +118,34 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   sendMessage() {
-    if (this.newMessage.trim() && this.selectedChat) {
-      const token = localStorage.getItem('token');
-      let senderId = null;
-      let senderName = 'You';
-  
-      if (token) {
-        const decodedToken: any = jwtDecode(token);
-        senderId = decodedToken.uid || decodedToken.userid;
-        senderName = decodedToken.name || decodedToken.username || 'You';
-      }
-  
+    if (this.newMessage.trim() && this.selectedChat && this.currentUserId !== null) {
       const messageData = {
         chatId: this.selectedChat.id,
-        senderId: senderId,
-        sender: senderName,
+        senderId: this.currentUserId,
+        sender: this.currentUser,
         content: this.newMessage,
         type: 'text',
       };
   
-      // Emit the message to the server
+      // Emit the message to the server via the socket
       this.socket.emit('sendMessage', messageData);
   
       // Clear the input field
       this.newMessage = '';
+  
+      // Scroll to the latest message
+      this.scrollToLatestMessage();
+  
+      // Fetch messages immediately after sending
+      this.fetchMessages(this.selectedChat.id);
     }
   }
 
   scrollToLatestMessage() {
     setTimeout(() => {
       if (this.chatContainer) {
-        this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
+        this.chatContainer.nativeElement.scrollTop =
+          this.chatContainer.nativeElement.scrollHeight;
       }
     }, 100);
   }

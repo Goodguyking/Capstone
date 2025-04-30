@@ -353,7 +353,14 @@ export class DataService {
   }
 
 
-  fetchMessages(chatId: number): Observable<{ message_id: number; sender: string; content: string; type: string }[]> {
+  fetchMessages(chatId: number): Observable<{ 
+    message_id: number; 
+    senderId: number; 
+    sender: string; 
+    content: string; 
+    type: string; 
+    created_at: string; 
+  }[]> {
     const token = localStorage.getItem('token'); // Retrieve the token from localStorage
   
     if (!token) {
@@ -367,10 +374,14 @@ export class DataService {
       'Content-Type': 'application/json',
     });
   
-    return this.http.get<{ message_id: number; sender: string; content: string; type: string }[]>(
-      `${this.apiUrl}?route=getMessages&chatId=${chatId}`,
-      { headers }
-    );
+    return this.http.get<{ 
+      message_id: number; 
+      senderId: number; 
+      sender: string; 
+      content: string; 
+      type: string; 
+      created_at: string; 
+    }[]>(`${this.apiUrl}?route=getMessages&chatId=${chatId}`, { headers });
   }
 
  

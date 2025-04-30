@@ -1,28 +1,51 @@
 <div class="chat-container">
-    <div class="chat-sidebar">
-      <h3>Chat History</h3>
-      <div *ngFor="let chat of chatHistory" (click)="selectChat(chat)" [class.active]="selectedChat?.id === chat.id">
-        {{ chat.name }}
-      </div>
-    </div>
-  
-    <div class="chat-main" *ngIf="selectedChat">
-      <h3>Chat with {{ selectedChat.name }}</h3>
-      <div class="chat-messages" #chatContainer>
-        <div *ngFor="let message of messages" class="chat-message">
-          <strong>{{ message.sender }}:</strong>
-          <span *ngIf="message.type === 'text'">{{ message.content }}</span>
-          <img *ngIf="message.type === 'image'" [src]="message.content" alt="Image" />
-        </div>
-      </div>
-      <div class="chat-input">
-        <input
-          type="text"
-          [(ngModel)]="newMessage"
-          placeholder="Type your message..."
-          (keydown.enter)="sendMessage()"
-        />
-        <button (click)="sendMessage()">Send</button>
-      </div>
+  <!-- Sidebar with chat history -->
+  <div class="chat-sidebar">
+    <h3>Chat History</h3>
+    <div
+      *ngFor="let chat of chatHistory"
+      (click)="selectChat(chat)"
+      [class.active]="selectedChat?.id === chat.id"
+      class="chat-history-item"
+    >
+      {{ chat.name }}
     </div>
   </div>
+
+  <!-- Main chat area -->
+  <div class="chat-main" *ngIf="selectedChat">
+    <h3>Chat with {{ selectedChat.name }}</h3>
+
+    <!-- Chat messages -->
+    <div class="chat-messages" #chatContainer>
+      <div
+      *ngFor="let message of messages"
+      class="chat-message"
+      [ngClass]="{
+        'sender': isSender(message.senderId),
+        'receiver': !isSender(message.senderId)
+      }"
+    >
+      <strong>{{ message.sender }}:</strong>
+      <span *ngIf="message.type === 'text'">{{ message.content }}</span>
+      <img *ngIf="message.type === 'image'" [src]="message.content" alt="Image" />
+    </div>
+    </div>
+
+    <!-- Input area -->
+    <div class="chat-input">
+      <input
+        type="text"
+        [(ngModel)]="newMessage"
+        placeholder="Type your message..."
+        (keydown.enter)="sendMessage()"
+      />
+      <button (click)="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <!-- Fallback if no chat is selected -->
+  <div class="no-chat-selected" *ngIf="!selectedChat">
+    <p>Select a chat to start messaging</p>
+  </div>
+</div>

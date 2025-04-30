@@ -112,3 +112,23 @@
     height: 50px;
     object-fit: cover;
   }
+
+  .chat-message.sender {
+    background-color: #d4f1f4;
+    text-align: right;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px 0;
+  }
+  
+  .chat-message.receiver {
+    background-color: #ffe0e6;
+    text-align: left;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px 0;
+  }
+  
+  
+  
+  
