@@ -30,6 +30,9 @@ const routes: Routes = [
     { path: '', redirectTo: 'tasks', pathMatch: 'full' },
     { path: 'tasks', component: TasksComponent },
     { path: 'chat/:chatId', component: ChatComponent },
+    { path: 'profile', component: ProfileComponent }, // Add ProfileComponent here
+
+    
   ] },
 
   // Admin routes

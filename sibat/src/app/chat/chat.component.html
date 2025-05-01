@@ -19,33 +19,63 @@
     <!-- Chat messages -->
     <div class="chat-messages" #chatContainer>
       <div
-      *ngFor="let message of messages"
-      class="chat-message"
-      [ngClass]="{
-        'sender': isSender(message.senderId),
-        'receiver': !isSender(message.senderId)
-      }"
-    >
-      <strong>{{ message.sender }}:</strong>
-      <span *ngIf="message.type === 'text'">{{ message.content }}</span>
-      <img *ngIf="message.type === 'image'" [src]="message.content" alt="Image" />
-    </div>
+        *ngFor="let message of messages"
+        class="chat-message"
+        [ngClass]="{
+          'sender': isSender(message.senderId),
+          'receiver': !isSender(message.senderId)
+        }"
+      >
+        <strong>{{ message.sender }}:</strong>
+        <span *ngIf="message.type === 'text'">{{ message.content }}</span>
+        <img
+          *ngIf="message.type === 'image'"
+          [src]="'http://localhost/Capstone/backend/uploads/photos/' + message.filename"
+          alt="Image"
+          (click)="viewPhoto('http://localhost/Capstone/backend/uploads/photos/' + message.filename)"
+          class="clickable-photo"
+        />
+        <div class="message-timestamp">
+          {{ message.created_at | date: 'short' }}
+        </div>
+      </div>
     </div>
 
     <!-- Input area -->
     <div class="chat-input">
-      <input
-        type="text"
-        [(ngModel)]="newMessage"
-        placeholder="Type your message..."
-        (keydown.enter)="sendMessage()"
-      />
-      <button (click)="sendMessage()">Send</button>
+      <div class="input-container">
+        <input
+          type="text"
+          [(ngModel)]="newMessage"
+          placeholder="Type your message..."
+          (keydown.enter)="onEnterPress($event)"
+        />
+        <label class="upload-icon">
+          <input type="file" (change)="onFileSelected($event)" hidden />
+          <img src="assets/icons/gallery-icon.png" alt="Gallery" class="gallery-icon" />
+        </label>
+        <button (click)="sendMessageOrImage()">
+          <mat-icon>send</mat-icon>
+        </button>
+      </div>
+
+      <!-- Preview selected image -->
+      <div class="image-preview" *ngIf="selectedFile">
+        <img [src]="previewUrl" alt="Selected Image" />
+        <button class="remove-image" (click)="removeSelectedFile()">X</button>
+      </div>
     </div>
   </div>
 
   <!-- Fallback if no chat is selected -->
   <div class="no-chat-selected" *ngIf="!selectedChat">
     <p>Select a chat to start messaging</p>
+  </div>
+
+  <!-- Photo Viewer Modal -->
+  <div class="photo-modal" *ngIf="isPhotoModalOpen" (click)="closePhotoModal()">
+    <div class="photo-modal-content">
+      <img [src]="selectedPhotoUrl" alt="Viewed Photo" />
+    </div>
   </div>
 </div>

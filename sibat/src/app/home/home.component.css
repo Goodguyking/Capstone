@@ -4,7 +4,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background: radial-gradient(circle, #F2B28C 0%, white 80%);
+    background: transparent;
     gap: 20px;
     padding: 40px;
 }

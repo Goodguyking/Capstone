@@ -406,7 +406,9 @@ export class DataService {
   }
 
 
-
+  uploadImage(formData: FormData): Observable<any> {
+    return this.http.post(`http://localhost:3000/upload`, formData);
+  }
 
 
 

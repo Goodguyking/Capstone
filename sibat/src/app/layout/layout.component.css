@@ -10,6 +10,7 @@
   flex-direction: column;
   justify-content: space-between; /* Pushes logout to the bottom */
   padding-top: 20px;
+  
 }
 
 .mat-nav-list {
@@ -17,6 +18,7 @@
 }
 
 .mat-list-item {
+  
   font-weight: 500;
   font-size: 16px;
   color: #B82132; /* Deep red */
@@ -60,12 +62,12 @@
 /* Toolbar */
 .mat-toolbar {
   background-color: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
+
   display: flex;
   align-items: center;
-  padding: 0 16px;
+  padding: 0px;
   height: 64px; /* Standard toolbar height */
+
 }
 
 .logo-container {
@@ -75,9 +77,18 @@
 }
 
 .logo {
-  width: 150px; /* Adjust logo size */
+  width: 30%;
   height: auto;
+  position: absolute;      /* or fixed if you want it to stay on scroll */
+  top: 0;
+  right: 0;
+  margin: 0px;            /* optional spacing from edges */
+  
 }
+
+
+
+
 
 /* Main Content */
 .content-container {
@@ -85,9 +96,14 @@
   background-color: #ffffff;
   border-radius: 8px;
   margin: 1rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-top: 80px; /* Add margin to prevent overlap with the toolbar */
+  background: transparent;
+  /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+  margin-top: 0px; /* Add margin to prevent overlap with the toolbar */
 }
+
+
+
+
 
 /* Background Animation */
 .spear-container {

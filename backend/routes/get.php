@@ -250,17 +250,25 @@ function getChatHistory() {
 
     $userId = intval($decodedPayload['uid']);
 
-    // Fetch chat history for the user
+    // Fetch chat history for the user, including the latest message details
     $stmt = $conn->prepare("
-        SELECT c.id AS chat_id, 
-               CASE 
-                   WHEN c.runner_id = ? THEN u2.first_name 
-                   ELSE u1.first_name 
-               END AS name
+        SELECT 
+            c.id AS chat_id, 
+            CASE 
+                WHEN c.runner_id = ? THEN u2.first_name 
+                ELSE u1.first_name 
+            END AS name,
+            m.content AS latest_message,
+            m.type AS latest_message_type,
+            m.filename AS latest_message_filename,
+            m.created_at AS latest_message_time
         FROM chats c
         JOIN users u1 ON c.runner_id = u1.userid
         JOIN users u2 ON c.user_id = u2.userid
+        LEFT JOIN messages m ON m.chat_id = c.id
         WHERE c.runner_id = ? OR c.user_id = ?
+        GROUP BY c.id
+        ORDER BY MAX(m.created_at) DESC
     ");
     $stmt->bind_param("iii", $userId, $userId, $userId);
     $stmt->execute();
@@ -292,7 +300,8 @@ function getChatHistory() {
            m.sender_id, 
            u.first_name AS sender, 
            m.content, 
-           m.type, 
+           m.type,
+              m.filename,
            m.created_at
     FROM messages m
     JOIN users u ON m.sender_id = u.userid

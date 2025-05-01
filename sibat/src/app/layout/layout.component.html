@@ -20,13 +20,15 @@
         <button mat-icon-button (click)="sidenav.toggle()">
           <mat-icon>menu</mat-icon>
         </button>
-        <span>
-          <img src="assets/Sibat.png" alt="Logo" class="logo" style="width: 30%; margin-top: 15%;" />
-        </span>
+
       </mat-toolbar>
   
       <!-- Dynamic Content -->
+       
       <div class="content-container">
+        <span class ="logo">
+          <img src="assets/Sibat.png" alt="Logo" class="logo"  />
+        </span>
         <router-outlet></router-outlet>
       </div>
     </mat-sidenav-content>
