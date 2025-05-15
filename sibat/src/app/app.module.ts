@@ -43,6 +43,8 @@ import { ApplicationsComponent } from './applications/applications.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { PostComponent } from './post/post.component';
 import { ChatComponent } from './chat/chat.component';
+import { ErrandHistoryComponent } from './errand-history/errand-history.component';
+import { RateComponent } from './rate/rate.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +62,9 @@ import { ChatComponent } from './chat/chat.component';
     TasksComponent,
     PostComponent,
     ChatComponent,
+    ErrandHistoryComponent,
+    RateComponent,
+
   ],
   imports: [
     BrowserModule,

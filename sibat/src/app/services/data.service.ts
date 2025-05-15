@@ -413,6 +413,56 @@ export class DataService {
 
 
 
+markChatAsDone(chatId: number): Observable<any> {
+  return this.http.post(`http://localhost:3000/api/chats/${chatId}/done`, {});
+}
+
+
+isRunner(): Observable<{ isRunner: boolean }> {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    return new Observable((observer) => {
+      observer.error({ error: 'Missing token' });
+    });
+  }
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+  return this.http.get<{ isRunner: boolean }>(`${this.apiUrl}?route=isRunner`, { headers });
+}
+
+
+errandDone(chatId: number): Observable<any> {
+  return this.http.post(`${this.apiUrl}?route=errandDone`, { chat_id: chatId });
+}
+
+getIsUser(): Observable<{ isUser: boolean, userId: number | null }> {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    return new Observable((observer) => {
+      observer.error({ error: 'Missing token' });
+    });
+  }
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+  return this.http.get<{ isUser: boolean, userId: number | null }>(`${this.apiUrl}?route=getIsUser`, { headers });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

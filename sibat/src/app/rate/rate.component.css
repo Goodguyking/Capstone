@@ -1,0 +1,39 @@
+/* filepath: c:\xampp\htdocs\Capstone\sibat\src\app\shared\rate\rate.component.css */
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  position: relative;
+  min-width: 300px;
+  min-height: 100px;
+  text-align: center;
+}
+.stars {
+  margin: 1rem 0;
+}
+mat-icon {
+  font-size: 2rem;
+  cursor: pointer;
+  color: #ccc;
+}
+mat-icon.selected {
+  color: #FFD700;
+}
+.modal-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}

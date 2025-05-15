@@ -15,6 +15,22 @@
   <!-- Main chat area -->
   <div class="chat-main" *ngIf="selectedChat">
     <h3>Chat with {{ selectedChat.name }}</h3>
+<app-rate
+  [visible]="isRateModalOpen"
+  (close)="isRateModalOpen = false"
+  (submit)="onRateSubmit($event)">
+</app-rate>
+    <!-- Done status banner -->
+    <div *ngIf="errandIsDone" class="errand-done-banner">
+      <mat-icon>check_circle</mat-icon> This errand is marked as done.
+    </div>
+
+  <!-- Mark as Done Button (only for runner and if not done) -->
+<div class="errand-done-container" *ngIf="!errandIsDone && isUserRole">
+  <button class="errand-done-btn" (click)="markChatAsDone()">
+    Mark as Done
+  </button>
+</div>
 
     <!-- Chat messages -->
     <div class="chat-messages" #chatContainer>

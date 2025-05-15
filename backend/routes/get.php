@@ -321,12 +321,97 @@ function getChatHistory() {
     $stmt->close();
 }
 
+function isRunner($userid) {
+    global $conn;
+
+    $stmt = $conn->prepare("SELECT role FROM users WHERE userid = ?");
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) {
+        return false;
+    }
+
+    $user = $result->fetch_assoc();
+    return $user['role'] === 'runner';
+}
+
+function getIsRunner() {
+    global $conn;
+
+    // Get the Authorization header from the request
+    $headers = getallheaders();
+    if (!isset($headers['Authorization'])) {
+        echo json_encode(["error" => "Missing token"]);
+        exit;
+    }
+
+    // Extract token from "Bearer <token>"
+    $token = str_replace("Bearer ", "", $headers['Authorization']);
+    $secretKey = 'your-secret-key'; // Use your actual secret key
+
+    // Verify the token
+    $decodedPayload = verifyJWT($token, $secretKey);
+
+    if (!$decodedPayload || !isset($decodedPayload['uid'])) {
+        echo json_encode(["error" => "Invalid or expired token"]);
+        exit;
+    }
+
+    $userid = intval($decodedPayload['uid']);
+    $result = isRunner($userid);
+
+    echo json_encode(["isRunner" => $result]);
+}
 
 
+function isUser($userid) {
+    global $conn;
 
+    $stmt = $conn->prepare("SELECT role FROM users WHERE userid = ?");
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
+    if ($result->num_rows === 0) {
+        return false;
+    }
 
+    $user = $result->fetch_assoc();
+    return $user['role'] === 'user';
+}
+ 
+function getIsUser() {
+    global $conn;
 
+    // Get the Authorization header from the request
+    $headers = getallheaders();
+    if (!isset($headers['Authorization'])) {
+        echo json_encode(["error" => "Missing token"]);
+        exit;
+    }
+
+    // Extract token from "Bearer <token>"
+    $token = str_replace("Bearer ", "", $headers['Authorization']);
+    $secretKey = 'your-secret-key'; // Use your actual secret key
+
+    // Verify the token
+    $decodedPayload = verifyJWT($token, $secretKey);
+
+    if (!$decodedPayload || !isset($decodedPayload['uid'])) {
+        echo json_encode(["error" => "Invalid or expired token"]);
+        exit;
+    }
+
+    $userid = intval($decodedPayload['uid']);
+    $result = isUser($userid);
+
+    echo json_encode([
+        "isUser" => $result,
+        "userId" => $result ? $userid : null
+    ]);
+}
 
 
 

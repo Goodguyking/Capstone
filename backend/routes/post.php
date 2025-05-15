@@ -700,6 +700,61 @@ function acceptErrand() {
 }
 
 
+ 
+ 
+function errandDone($chatId) {
+    global $conn;
+
+    // Fetch the chat row
+    $stmt = $conn->prepare("SELECT * FROM chats WHERE id = ?");
+    $stmt->bind_param("i", $chatId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) {
+        echo json_encode(["error" => "Chat not found"]);
+        return;
+    }
+
+    $chat = $result->fetch_assoc();
+
+    // Insert into chat_history
+    $stmt = $conn->prepare("INSERT INTO chat_history (chat_id, runner_id, user_id, status, rating, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param(
+        "iiissss",
+        $chat['id'],
+        $chat['runner_id'],
+        $chat['user_id'],
+        $chat['status'],
+        $chat['rating'],
+        $chat['created_at'],
+        $chat['updated_at']
+    );
+    if (!$stmt->execute()) {
+        echo json_encode(["error" => "Failed to archive chat"]);
+        return;
+    }
+
+    // Move messages to messages_history
+    $stmt = $conn->prepare("INSERT INTO messages_history SELECT * FROM messages WHERE chat_id = ?");
+    $stmt->bind_param("i", $chatId);
+    $stmt->execute();
+
+    // Delete messages from messages table
+    $stmt = $conn->prepare("DELETE FROM messages WHERE chat_id = ?");
+    $stmt->bind_param("i", $chatId);
+    $stmt->execute();
+
+    // Remove from chats
+    $stmt = $conn->prepare("DELETE FROM chats WHERE id = ?");
+    $stmt->bind_param("i", $chatId);
+    if ($stmt->execute()) {
+        echo json_encode(["message" => "Chat and messages moved to history (errand done)"]);
+    } else {
+        echo json_encode(["error" => "Failed to remove chat from active chats"]);
+    }
+}
 
 
 

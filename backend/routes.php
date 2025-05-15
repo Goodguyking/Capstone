@@ -103,6 +103,34 @@ switch ($requestUri) {
         getMessages();
         break;
 
+    case 'isRunner':
+        require_once 'routes/get.php';
+        getIsRunner(); 
+        break;
+
+case 'errandDone':
+    require_once 'routes/post.php';
+    $data = json_decode(file_get_contents("php://input"), true);
+    $chatId = intval($data['chat_id'] ?? 0);
+    errandDone($chatId);
+    break;
+
+    case 'getIsUser':
+        require_once 'routes/get.php';
+        getIsUser();
+        break;
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         

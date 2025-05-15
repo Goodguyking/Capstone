@@ -10,20 +10,21 @@ import { io } from 'socket.io-client';
 import { DataService } from '../services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css'],
-  encapsulation: ViewEncapsulation.None, // Disable encapsulation
+  encapsulation: ViewEncapsulation.None,
 })
 export class ChatComponent implements OnInit, OnDestroy {
   selectedPhotoUrl: string | null = null;
   isPhotoModalOpen: boolean = false;
 
-
-  chatHistory: { id: number; name: string }[] = [];
-  selectedChat: { id: number; name: string } | null = null;
+  chatHistory: { id: number; name: string; errand_id?: number; status?: string; runner_id?: number; user_id?: number }[] = [];
+  selectedChat: { id: number; name: string; errand_id?: number; status?: string; runner_id?: number; user_id?: number } | null = null;
+  selectedErrandId: number | null = null;
   messages: {
     created_at: string | number | Date;
     sender: string;
@@ -37,10 +38,15 @@ export class ChatComponent implements OnInit, OnDestroy {
   currentUserId: number | null = null;
   selectedFile: File | null = null;
   previewUrl: string | null = null;
+  errandIsDone = false;
+  isRunner: boolean = false;
+  isUserRole: boolean = false; // For user role check
+  isRateModalOpen = false;
 
   private socket: any;
 
   @ViewChild('chatContainer') chatContainer!: ElementRef;
+  window: any;
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
@@ -53,8 +59,19 @@ export class ChatComponent implements OnInit, OnDestroy {
       const decodedToken: any = jwtDecode(token);
       this.currentUser = decodedToken.name || decodedToken.username || '';
       this.currentUserId = decodedToken.uid || decodedToken.userid || null;
-      console.log('Current user:', this.currentUser, 'ID:', this.currentUserId);
     }
+
+    // Check if current user is a runner
+    this.dataService.isRunner().subscribe({
+      next: (res) => { this.isRunner = res.isRunner; },
+      error: () => { this.isRunner = false; }
+    });
+
+    // Check if current user is a user (customer)
+    this.dataService.getIsUser().subscribe({
+      next: (res) => { this.isUserRole = res.isUser; },
+      error: () => { this.isUserRole = false; }
+    });
 
     this.route.params.subscribe((params) => {
       const chatId = +params['chatId'];
@@ -70,20 +87,19 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
 
-    // Open the photo modal and set the selected photo URL
-    viewPhoto(photoUrl: string) {
-      this.selectedPhotoUrl = photoUrl;
-      this.isPhotoModalOpen = true;
-    }
+  viewPhoto(photoUrl: string) {
+    this.selectedPhotoUrl = photoUrl;
+    this.isPhotoModalOpen = true;
+  }
 
-    closePhotoModal() {
-      this.selectedPhotoUrl = null;
-      this.isPhotoModalOpen = false;
-    }
+  closePhotoModal() {
+    this.selectedPhotoUrl = null;
+    this.isPhotoModalOpen = false;
+  }
 
   initializeSocketConnection() {
     this.socket = io('http://localhost:3000');
-  
+
     this.socket.on('receiveMessage', (data: any) => {
       if (this.selectedChat && data.chatId === this.selectedChat.id) {
         const isDuplicate = this.messages.some(msg => {
@@ -94,7 +110,7 @@ export class ChatComponent implements OnInit, OnDestroy {
             msg.filename === data.filename
           );
         });
-  
+
         if (!isDuplicate) {
           this.messages.push({
             sender: data.sender,
@@ -104,20 +120,23 @@ export class ChatComponent implements OnInit, OnDestroy {
             filename: data.filename,
             created_at: data.created_at,
           });
-  
+
           this.scrollToLatestMessage();
         }
       }
     });
   }
-  
 
   fetchChatHistory() {
     this.dataService.fetchChatHistory().subscribe(
       (response) => {
-        this.chatHistory = response.map((chat: { chat_id: number; name: string }) => ({
+        this.chatHistory = response.map((chat: { chat_id: number; name: string; errand_id?: number; status?: string; runner_id?: number; user_id?: number }) => ({
           id: chat.chat_id,
           name: chat.name,
+          errand_id: chat.errand_id,
+          status: chat.status,
+          runner_id: chat.runner_id,
+          user_id: chat.user_id // Make sure this is included!
         }));
       },
       (error) => {
@@ -126,8 +145,10 @@ export class ChatComponent implements OnInit, OnDestroy {
     );
   }
 
-  selectChat(chat: { id: number; name: string }) {
+  selectChat(chat: { id: number; name: string; errand_id?: number; status?: string; runner_id?: number; user_id?: number }) {
     this.selectedChat = chat;
+    this.selectedErrandId = chat.errand_id || null;
+    this.errandIsDone = chat.status === 'done';
     this.fetchMessages(chat.id);
     this.socket.emit('joinChat', chat.id);
   }
@@ -142,7 +163,7 @@ export class ChatComponent implements OnInit, OnDestroy {
           content: msg.content,
           type: msg.type,
           filename: msg.filename,
-          created_at: msg.created_at, // Map the created_at field
+          created_at: msg.created_at,
         }));
         this.scrollToLatestMessage();
       },
@@ -152,6 +173,37 @@ export class ChatComponent implements OnInit, OnDestroy {
     );
   }
 
+  get isUser(): boolean {
+    // selectedChat?.user_id must be available in your chat object!
+    return this.selectedChat != null && this.selectedChat['user_id'] === this.currentUserId;
+  }
+
+markChatAsDone() {
+  if (this.selectedChat) {
+    this.dataService.markChatAsDone(this.selectedChat.id).subscribe(() => {
+      this.selectedChat!.status = 'done';
+      this.errandIsDone = true;
+      this.dataService.errandDone(this.selectedChat!.id).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Errand marked as done!',
+            confirmButtonText: 'OK'
+          }).then(() => {
+            this.isRateModalOpen = true; // Show the rate modal after success
+                this.window.location.reload();
+
+          });
+        },
+        error: (err) => {
+          console.error('Error archiving chat:', err);
+        }
+      });
+    });
+  }
+}
+
   sendMessage() {
     if (this.newMessage.trim() && this.selectedChat && this.currentUserId !== null) {
       const messageData = {
@@ -159,17 +211,16 @@ export class ChatComponent implements OnInit, OnDestroy {
         senderId: this.currentUserId,
         content: this.newMessage,
       };
-  
-      // Emit the text message to the server
+
       this.socket.emit('sendTextMessage', messageData);
-  
-      // Clear the input field
       this.newMessage = '';
     }
   }
-
-
-
+onRateSubmit(rating: number) {
+  // Handle the rating (e.g., send to backend)
+  this.isRateModalOpen = false;
+  // Optionally show a thank you message
+}
   sendImage() {
     if (this.selectedFile && this.selectedChat && this.currentUserId !== null) {
       const formData = new FormData();
@@ -177,9 +228,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       formData.append('chatId', this.selectedChat.id.toString());
       formData.append('senderId', this.currentUserId.toString());
       formData.append('type', 'image');
-  
-      console.log('Uploading image:', this.selectedFile.name);
-  
+
       this.dataService.uploadImage(formData).subscribe(
         (response: any) => {
           const messageData = {
@@ -187,13 +236,9 @@ export class ChatComponent implements OnInit, OnDestroy {
             senderId: this.currentUserId,
             filename: response.filename,
           };
-  
-          console.log('Emitting sendPhotoMessage event:', messageData);
-  
-          // Emit the photo message to the server
+
           this.socket.emit('sendPhotoMessage', messageData);
-  
-          // Clear the selected file
+
           this.selectedFile = null;
           this.previewUrl = null;
         },
@@ -203,7 +248,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       );
     }
   }
-
 
   scrollToLatestMessage() {
     setTimeout(() => {
@@ -220,13 +264,12 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   sendMessageOrImage() {
     if (this.selectedFile) {
-      // Handle image upload
       const formData = new FormData();
       formData.append('image', this.selectedFile);
       formData.append('chatId', this.selectedChat?.id.toString() ?? '');
       formData.append('senderId', this.currentUserId?.toString() ?? '');
       formData.append('type', 'image');
-  
+
       this.dataService.uploadImage(formData).subscribe(
         (response: any) => {
           const messageData = {
@@ -234,13 +277,11 @@ export class ChatComponent implements OnInit, OnDestroy {
             senderId: this.currentUserId,
             filename: response.filename,
             type: 'image',
-            created_at: new Date().toISOString(), // Add the current timestamp
+            created_at: new Date().toISOString(),
           };
-  
-          // Emit the photo message to the server
+
           this.socket.emit('sendPhotoMessage', messageData);
-  
-          // Clear selected file and preview
+
           this.selectedFile = null;
           this.previewUrl = null;
         },
@@ -249,42 +290,30 @@ export class ChatComponent implements OnInit, OnDestroy {
         }
       );
     } else if (this.newMessage.trim()) {
-      // Handle text message
       const messageData = {
         chatId: this.selectedChat?.id ?? 0,
         senderId: this.currentUserId,
         content: this.newMessage,
         type: 'text',
-        created_at: new Date().toISOString(), // Add the current timestamp
+        created_at: new Date().toISOString(),
       };
-  
-      // Emit the text message to the server
+
       this.socket.emit('sendTextMessage', messageData);
-  
-      // Clear input
       this.newMessage = '';
     }
   }
-  
-  
-  
-  
+
   onEnterPress(event: Event) {
-    // Cast the event to a KeyboardEvent
     const keyboardEvent = event as KeyboardEvent;
-  
-    // Prevent default Enter behavior
     keyboardEvent.preventDefault();
-  
-    // Call sendMessageOrImage() when Enter is pressed
     this.sendMessageOrImage();
   }
-  
+
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
       this.selectedFile = file;
-  
+
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.previewUrl = e.target.result;
@@ -292,13 +321,9 @@ export class ChatComponent implements OnInit, OnDestroy {
       reader.readAsDataURL(file);
     }
   }
-  
+
   removeSelectedFile() {
     this.selectedFile = null;
     this.previewUrl = null;
   }
-
-
-
-
 }

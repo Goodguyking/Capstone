@@ -1,13 +1,12 @@
 <mat-sidenav-container class="sidenav-container">
   <!-- Sidebar -->
   <mat-sidenav #sidenav mode="side" opened class="sidebar">
-    <mat-nav-list>
-      <a mat-list-item routerLink="/runner/tasks" routerLinkActive="active-link">Task Management</a>
-      <a mat-list-item routerLink="/runner/profile" routerLinkActive="active-link">Profile</a>
-      <a mat-list-item (click)="navigateToFirstChat()" routerLinkActive="active-link">Chat</a>
-
-    </mat-nav-list>
-
+<mat-nav-list>
+  <a mat-list-item routerLink="/runner/tasks" routerLinkActive="active-link">Task Management</a>
+  <a mat-list-item routerLink="/runner/profile" routerLinkActive="active-link">Profile</a>
+  <a mat-list-item (click)="navigateToFirstChat()" routerLinkActive="active-link">Chat</a>
+  <a mat-list-item routerLink="/runner/history" routerLinkActive="active-link">Errand History</a> <!-- NEW TAB -->
+</mat-nav-list>
     <!-- Logout Button at the Bottom -->
     <div class="logout-container">
       <a mat-list-item class="logout-button" (click)="logout()">Logout</a>
