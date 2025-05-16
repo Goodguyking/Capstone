@@ -180,7 +180,8 @@ export class ChatComponent implements OnInit, OnDestroy {
 
 markChatAsDone() {
   if (this.selectedChat) {
-    this.dataService.markChatAsDone(this.selectedChat.id).subscribe(() => {
+    // Provide default values for rating and rateNotes if not available
+    this.dataService.markChatAsDone(this.selectedChat.id, 0, '').subscribe(() => {
       this.selectedChat!.status = 'done';
       this.errandIsDone = true;
       this.dataService.errandDone(this.selectedChat!.id).subscribe({
@@ -190,10 +191,6 @@ markChatAsDone() {
             title: 'Success',
             text: 'Errand marked as done!',
             confirmButtonText: 'OK'
-          }).then(() => {
-            this.isRateModalOpen = true; // Show the rate modal after success
-                this.window.location.reload();
-
           });
         },
         error: (err) => {
@@ -216,10 +213,21 @@ markChatAsDone() {
       this.newMessage = '';
     }
   }
-onRateSubmit(rating: number) {
-  // Handle the rating (e.g., send to backend)
-  this.isRateModalOpen = false;
-  // Optionally show a thank you message
+onRateSubmit(event: { rating: number, notes: string }) {
+  if (!this.selectedChat) return;
+
+  // 1. First, rate the chat (update rating and notes)
+  this.dataService.rateChat(this.selectedChat.id, event.rating, event.notes).subscribe({
+    next: () => {
+      // 2. Then, mark the chat as done (move to history)
+      this.markChatAsDone();
+      this.isRateModalOpen = false;
+    },
+    error: (err) => {
+      // Handle error (optional: show error message)
+      console.error('Failed to rate chat:', err);
+    }
+  });
 }
   sendImage() {
     if (this.selectedFile && this.selectedChat && this.currentUserId !== null) {

@@ -64,6 +64,7 @@ import { RateComponent } from './rate/rate.component';
     ChatComponent,
     ErrandHistoryComponent,
     RateComponent,
+    
 
   ],
   imports: [

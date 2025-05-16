@@ -413,10 +413,25 @@ export class DataService {
 
 
 
-markChatAsDone(chatId: number): Observable<any> {
-  return this.http.post(`http://localhost:3000/api/chats/${chatId}/done`, {});
+markChatAsDone(chatId: number, rating: number, rateNotes: string = ''): Observable<any> {
+  return this.http.post(
+    `http://localhost:3000/api/chats/${chatId}/done`,
+    { rating, rateNotes }
+  );
 }
 
+rateChat(chatId: number, rating: number, rateNotes: string = ''): Observable<any> {
+  const token = localStorage.getItem('token');
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  });
+  return this.http.post(
+    `${this.apiUrl}?route=rateChat`,
+    { chat_id: chatId, rating: rating, rate_notes: rateNotes },
+    { headers }
+  );
+}
 
 isRunner(): Observable<{ isRunner: boolean }> {
   const token = localStorage.getItem('token');

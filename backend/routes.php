@@ -108,19 +108,22 @@ switch ($requestUri) {
         getIsRunner(); 
         break;
 
-case 'errandDone':
-    require_once 'routes/post.php';
-    $data = json_decode(file_get_contents("php://input"), true);
-    $chatId = intval($data['chat_id'] ?? 0);
-    errandDone($chatId);
-    break;
+    case 'errandDone':
+        require_once 'routes/post.php';
+        $data = json_decode(file_get_contents("php://input"), true);
+        $chatId = intval($data['chat_id'] ?? 0);
+        errandDone($chatId);
+        break;
 
     case 'getIsUser':
         require_once 'routes/get.php';
         getIsUser();
         break;
 
-
+    case 'rateChat':
+        require_once 'routes/post.php';
+        rateChat();
+        break;
 
 
 

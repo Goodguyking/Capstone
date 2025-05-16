@@ -27,7 +27,7 @@
 
   <!-- Mark as Done Button (only for runner and if not done) -->
 <div class="errand-done-container" *ngIf="!errandIsDone && isUserRole">
-  <button class="errand-done-btn" (click)="markChatAsDone()">
+  <button class="errand-done-btn" (click)="isRateModalOpen = true">
     Mark as Done
   </button>
 </div>

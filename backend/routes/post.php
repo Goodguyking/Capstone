@@ -719,18 +719,19 @@ function errandDone($chatId) {
     $chat = $result->fetch_assoc();
 
     // Insert into chat_history
-    $stmt = $conn->prepare("INSERT INTO chat_history (chat_id, runner_id, user_id, status, rating, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param(
-        "iiissss",
-        $chat['id'],
-        $chat['runner_id'],
-        $chat['user_id'],
-        $chat['status'],
-        $chat['rating'],
-        $chat['created_at'],
-        $chat['updated_at']
-    );
+$stmt = $conn->prepare("INSERT INTO chat_history (chat_id, runner_id, user_id, status, rating, rate_notes, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt->bind_param(
+    "iiisssss",
+    $chat['id'],
+    $chat['runner_id'],
+    $chat['user_id'],
+    $chat['status'],
+    $chat['rating'],
+    $chat['rate_notes'], // <-- new column
+    $chat['created_at'],
+    $chat['updated_at']
+);
     if (!$stmt->execute()) {
         echo json_encode(["error" => "Failed to archive chat"]);
         return;
@@ -756,7 +757,56 @@ function errandDone($chatId) {
     }
 }
 
+function rateChat() {
+    global $conn;
 
+    // Check if the request method is POST
+    if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+        echo json_encode(["error" => "Invalid request method"]);
+        exit;
+    }
+
+    // Get the Authorization header
+    $headers = getallheaders();
+    if (!isset($headers['Authorization'])) {
+        echo json_encode(["error" => "Missing token"]);
+        exit;
+    }
+
+    // Verify the token
+    $token = str_replace("Bearer ", "", $headers['Authorization']);
+    $secretKey = 'your-secret-key';
+    $decodedPayload = verifyJWT($token, $secretKey);
+
+    if (!$decodedPayload || !isset($decodedPayload['uid'])) {
+        echo json_encode(["error" => "Invalid or expired token"]);
+        exit;
+    }
+
+    // Get the JSON payload
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    if (!$data || !isset($data['chat_id']) || !isset($data['rating'])) {
+        echo json_encode(["error" => "Invalid input data"]);
+        exit;
+    }
+
+    $chatId = intval($data['chat_id']);
+    $rating = intval($data['rating']);
+    $rateNotes = $data['rate_notes'] ?? null;
+
+    // Update the chat with rating and notes
+    $stmt = $conn->prepare("UPDATE chats SET rating = ?, rate_notes = ? WHERE id = ?");
+    $stmt->bind_param("isi", $rating, $rateNotes, $chatId);
+
+    if ($stmt->execute()) {
+        echo json_encode(["message" => "Chat rated successfully"]);
+    } else {
+        echo json_encode(["error" => "Failed to rate chat"]);
+    }
+
+    $stmt->close();
+}
 
 
 

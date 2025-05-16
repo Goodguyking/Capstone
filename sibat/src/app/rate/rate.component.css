@@ -1,39 +1,148 @@
-/* filepath: c:\xampp\htdocs\Capstone\sibat\src\app\shared\rate\rate.component.css */
-.modal-backdrop {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
 .modal-content {
   background: #fff;
-  padding: 1.5rem;
-  border-radius: 8px;
+  padding: 2rem 2.5rem 1.5rem 2.5rem;
+  border-radius: 16px;
   position: relative;
-  min-width: 300px;
-  min-height: 100px;
+  min-width: 350px;
+  max-width: 420px;
+  width: 90vw;
+  min-height: 220px;
   text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  animation: modalIn 0.2s;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
 }
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1976d2;
+  letter-spacing: 0.5px;
+}
+
+h2 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin: 0.7rem 0 0.5rem 0;
+  color: #333;
+}
+
+p {
+  font-size: 1rem;
+  color: #444;
+  margin-bottom: 0.5rem;
+}
+
+.rate-notes {
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.submit-btn, .modal-close {
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+
+
+@keyframes modalIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Responsive for small screens */
+@media (max-width: 500px) {
+  .modal-content {
+    padding: 1rem 0.5rem;
+    min-width: 90vw;
+    max-width: 98vw;
+  }
+}
+
 .stars {
-  margin: 1rem 0;
+  margin: 1.2rem 0 0.7rem 0;
+  display: flex;
+  justify-content: center;
+  gap: 0.3rem;
+  align-items: center;
+  min-height: 2.6rem;
+  overflow: visible;
 }
+
 mat-icon {
-  font-size: 2rem;
+  font-size: 2.4rem;
   cursor: pointer;
   color: #ccc;
+  transition: color 0.2s, text-shadow 0.2s;
+  user-select: none;
+  vertical-align: middle;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
+
 mat-icon.selected {
   color: #FFD700;
+  text-shadow: 0 0 8px #FFD70077;
 }
+
+.rate-notes {
+  width: 100%;
+  margin: 1rem 0 0.5rem 0;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 70px;
+  box-sizing: border-box;
+  background: #fafbfc;
+  transition: border 0.2s;
+}
+
+.rate-notes:focus {
+  border: 1.5px solid #1976d2;
+  outline: none;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.submit-btn {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1.4rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px #1976d21a;
+}
+
+.submit-btn:disabled {
+  background: #b0b0b0;
+  cursor: not-allowed;
+}
+
 .modal-close {
-  position: absolute;
-  top: 8px;
-  right: 12px;
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.7rem;
+  color: #888;
   cursor: pointer;
+  margin-left: 0.5rem;
+  transition: color 0.2s;
+}
+
+.modal-close:hover {
+  color: #1976d2;
 }

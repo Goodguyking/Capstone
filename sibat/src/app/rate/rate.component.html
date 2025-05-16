@@ -1,13 +1,23 @@
-<!-- filepath: c:\xampp\htdocs\Capstone\sibat\src\app\shared\rate\rate.component.html -->
 <div class="modal-backdrop" *ngIf="visible" (click)="onClose()">
   <div class="modal-content" (click)="$event.stopPropagation()">
+    <h1>thank you for using Sibat</h1>
+    <p>How would you rate your experience with the runner?</p>
     <h2>Rate Your Runner</h2>
+
     <div class="stars">
       <span *ngFor="let star of [1,2,3,4,5]" (click)="setRating(star)">
         <mat-icon [ngClass]="{'selected': star <= rating}">star</mat-icon>
       </span>
     </div>
-    <button (click)="onSubmit()" [disabled]="rating === 0">Submit</button>
-    <button class="modal-close" (click)="onClose()">×</button>
+    <textarea
+      [(ngModel)]="notes"
+      placeholder="Leave a note (optional)..."
+      rows="3"
+      class="rate-notes"
+    ></textarea>
+    <div class="modal-actions">
+      <button (click)="onSubmit()" [disabled]="rating === 0" class="submit-btn">Submit</button>
+      <button class="modal-close" (click)="onClose()">×</button>
+    </div>
   </div>
 </div>
