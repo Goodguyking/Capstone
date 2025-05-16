@@ -130,13 +130,17 @@
   }
 
   .sidebar {
-    width: 100%;
+    width: 220px;         /* Fixed width for mobile */
+    min-width: 160px;
+    max-width: 80vw;
     box-shadow: none;
+    padding-top: 20px;
   }
 
   .content-container {
     margin: 0;
     border-radius: 0;
     margin-top: 64px; /* Adjust for smaller screens */
+    padding: 1rem 0.5rem;
   }
 }

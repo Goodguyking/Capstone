@@ -44,6 +44,22 @@ p {
   font-family: inherit;
 }
 
+.modal-close {
+  background: #eee;
+  border: none;
+  font-size: 1rem;
+  color: #444;
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  margin-left: 0.5rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.modal-close:hover {
+  background: #e0e0e0;
+  color: #1976d2;
+}
 
 
 @keyframes modalIn {

@@ -8,7 +8,15 @@ import { Router } from '@angular/router';
 })
 export class LayoutComponent {
   constructor(private router: Router) {}
+isMobile = false;
 
+
+ngOnInit() {
+  this.isMobile = window.innerWidth <= 768;
+  window.addEventListener('resize', () => {
+    this.isMobile = window.innerWidth <= 768;
+  });
+}
   logout() {
     // Clear JWT and any stored user data
     localStorage.removeItem('userId');
