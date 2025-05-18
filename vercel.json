@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "outputDirectory": "sibat/dist/sibat",
+  "buildCommand": "cd sibat && npm install && ng build --configuration production"
+} 
