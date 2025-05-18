@@ -1,5 +1,7 @@
 {
   "version": 2,
+  "buildCommand": "cd sibat && npm install --legacy-peer-deps && ng build",
+  "outputDirectory": "sibat/dist/sibat",
   "routes": [
     {
       "handle": "filesystem"
@@ -12,7 +14,5 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "outputDirectory": "sibat/dist/sibat",
-  "buildCommand": "cd sibat && npm install && ng build --configuration production"
+  ]
 } 
