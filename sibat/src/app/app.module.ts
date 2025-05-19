@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms'; // <-- Import FormsModule
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -45,6 +45,7 @@ import { PostComponent } from './post/post.component';
 import { ChatComponent } from './chat/chat.component';
 import { ErrandHistoryComponent } from './errand-history/errand-history.component';
 import { RateComponent } from './rate/rate.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   declarations: [
@@ -85,7 +86,13 @@ import { RateComponent } from './rate/rate.component';
     MatCheckboxModule,
     MatInputModule,
     MatSelectModule,
-    MatDialogModule
+    MatDialogModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    })
 
   ],
   providers: [

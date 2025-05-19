@@ -1,10 +1,15 @@
 <div class="chat-container">
+  <!-- Mobile Sidebar Toggle Button -->
+  <button class="mobile-sidebar-toggle" (click)="toggleSidebar()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  
   <!-- Sidebar with chat history -->
-  <div class="chat-sidebar">
-    <h3>Chat History</h3>
+  <div class="chat-sidebar" [ngClass]="{'visible': isSidebarVisible}">
+    <h3>Chats</h3>
     <div
       *ngFor="let chat of chatHistory"
-      (click)="selectChat(chat)"
+      (click)="selectChat(chat); isSidebarVisible = false"
       [class.active]="selectedChat?.id === chat.id"
       class="chat-history-item"
     >
@@ -23,6 +28,22 @@
     <!-- Done status banner -->
     <div *ngIf="errandIsDone" class="errand-done-banner">
       <mat-icon>check_circle</mat-icon> This errand is marked as done.
+    </div>
+
+    <!-- Errand Details (visible to both user and runner if they are part of the errand) -->
+    <div *ngIf="errandDetails" class="errand-details">
+      <div class="errand-details-header" (click)="toggleErrandDetails()">
+        <h4>Errand Details</h4>
+        <span class="toggle-icon">
+          <mat-icon>{{ isErrandDetailsExpanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+        </span>
+      </div>
+      <div class="errand-info" [ngClass]="{'collapsed': !isErrandDetailsExpanded}">
+        <p><strong>Task:</strong> {{errandDetails.task_description || 'Not specified'}}</p>
+        <p><strong>Pickup Location:</strong> {{errandDetails.collecting_location || 'Not specified'}}</p>
+        <p><strong>Delivery Location:</strong> {{errandDetails.delivery_location || 'Not specified'}}</p>
+        <p><strong>Total Price:</strong> ₱{{errandDetails.total_price || '0'}}</p>
+      </div>
     </div>
 
   <!-- Mark as Done Button (only for runner and if not done) -->
@@ -46,9 +67,9 @@
         <span *ngIf="message.type === 'text'">{{ message.content }}</span>
         <img
           *ngIf="message.type === 'image'"
-          [src]="'http://localhost/Capstone/backend/uploads/photos/' + message.filename"
+          [src]="'https://chatapi.loophole.site/Capstone/backend/uploads/photos/' + message.filename"
           alt="Image"
-          (click)="viewPhoto('http://localhost/Capstone/backend/uploads/photos/' + message.filename)"
+          (click)="viewPhoto('https://chatapi.loophole.site/Capstone/backend/uploads/photos/' + message.filename)"
           class="clickable-photo"
         />
         <div class="message-timestamp">

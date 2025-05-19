@@ -77,7 +77,7 @@ function uploadProfilePic() {
         $stmt->bind_param("si", $fileName, $userid);
         $stmt->execute();
 
-        echo json_encode(["profilepic" => "http://localhost/CAPSTONE/backend/uploads/" . $fileName]); 
+        echo json_encode(["profilepic" => "https://sibatapi2.loophole.site/CAPSTONE/backend/uploads/" . $fileName]); 
     } else {
         echo json_encode(["error" => "Failed to upload"]);
     }
@@ -681,12 +681,15 @@ function acceptErrand() {
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            // Chat already exists
+            // Chat already exists, update it with the errand_id
             $chatId = $result->fetch_assoc()['id'];
+            $stmt = $conn->prepare("UPDATE chats SET errand_id = ? WHERE id = ?");
+            $stmt->bind_param("ii", $errandId, $chatId);
+            $stmt->execute();
         } else {
-            // Create a new chat
-            $stmt = $conn->prepare("INSERT INTO chats (runner_id, user_id) VALUES (?, ?)");
-            $stmt->bind_param("ii", $runnerId, $errandPoster);
+            // Create a new chat with errand_id
+            $stmt = $conn->prepare("INSERT INTO chats (runner_id, user_id, errand_id) VALUES (?, ?, ?)");
+            $stmt->bind_param("iii", $runnerId, $errandPoster, $errandId);
             $stmt->execute();
             $chatId = $conn->insert_id;
         }

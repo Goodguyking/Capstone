@@ -12,6 +12,22 @@ import { ActivatedRoute } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
 
+// Define an interface for errand details
+interface ErrandDetails {
+  errand_id?: number;
+  title?: string;
+  description?: string;
+  task_description?: string;
+  location?: string;
+  collecting_location?: string;
+  delivery_location?: string;
+  payment?: number;
+  total_price?: number;
+  status?: string;
+  user_id?: number;
+  runner_id?: number;
+}
+
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -33,6 +49,8 @@ export class ChatComponent implements OnInit, OnDestroy {
     type: string;
     filename?: string;
   }[] = [];
+  errandDetails: ErrandDetails | null = null;
+  errands: any[] = [];
   newMessage: string = '';
   currentUser: string = '';
   currentUserId: number | null = null;
@@ -42,6 +60,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   isRunner: boolean = false;
   isUserRole: boolean = false; // For user role check
   isRateModalOpen = false;
+  isErrandDetailsExpanded: boolean = false;
+  isSidebarVisible: boolean = false;
 
   private socket: any;
 
@@ -53,6 +73,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initializeSocketConnection();
     this.fetchChatHistory();
+    this.fetchAllErrands(); // Fetch all errands for later filtering
 
     const token = localStorage.getItem('token');
     if (token) {
@@ -61,11 +82,9 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.currentUserId = decodedToken.uid || decodedToken.userid || null;
     }
 
-    // Check if current user is a runner
-    this.dataService.isRunner().subscribe({
-      next: (res) => { this.isRunner = res.isRunner; },
-      error: () => { this.isRunner = false; }
-    });
+    // Check if the current user is a runner
+    const userRole = localStorage.getItem('user_role');
+    this.isRunner = userRole === 'runner';
 
     // Check if current user is a user (customer)
     this.dataService.getIsUser().subscribe({
@@ -98,7 +117,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   initializeSocketConnection() {
-    this.socket = io('http://localhost:3000');
+    this.socket = io('https://chatapi.loophole.site');
 
     this.socket.on('receiveMessage', (data: any) => {
       if (this.selectedChat && data.chatId === this.selectedChat.id) {
@@ -136,7 +155,7 @@ export class ChatComponent implements OnInit, OnDestroy {
           errand_id: chat.errand_id,
           status: chat.status,
           runner_id: chat.runner_id,
-          user_id: chat.user_id // Make sure this is included!
+          user_id: chat.user_id
         }));
       },
       (error) => {
@@ -145,12 +164,54 @@ export class ChatComponent implements OnInit, OnDestroy {
     );
   }
 
+  fetchAllErrands() {
+    this.dataService.getErrands().subscribe({
+      next: (errands) => {
+        this.errands = errands;
+      },
+      error: (error) => {
+        console.error('Error fetching errands:', error);
+      }
+    });
+  }
+
   selectChat(chat: { id: number; name: string; errand_id?: number; status?: string; runner_id?: number; user_id?: number }) {
     this.selectedChat = chat;
     this.selectedErrandId = chat.errand_id || null;
     this.errandIsDone = chat.status === 'done';
     this.fetchMessages(chat.id);
+    this.isErrandDetailsExpanded = false; // Collapse errand details by default
+    
+    // Find the errand for this chat
+    this.findErrandForChat(chat);
+    
     this.socket.emit('joinChat', chat.id);
+  }
+
+  findErrandForChat(chat: { id: number; name: string; errand_id?: number; status?: string; runner_id?: number; user_id?: number }) {
+    // Reset errand details first
+    this.errandDetails = null;
+    
+    // If we have an errand_id in the chat and we've loaded the errands
+    if (chat.errand_id && this.errands && this.errands.length > 0) {
+      console.log("Finding errand with ID:", chat.errand_id);
+      
+      // Find the errand that matches the errand_id from the chat
+      const errand = this.errands.find(e => e.errand_id == chat.errand_id);
+      
+      if (errand) {
+        console.log("Found errand:", errand);
+        // No need to check user/runner IDs since the chat already has the association
+        this.errandDetails = {
+          task_description: errand.task_description,
+          collecting_location: errand.collecting_location,
+          delivery_location: errand.delivery_location,
+          total_price: errand.total_price
+        };
+      } else {
+        console.log("Errand not found with ID:", chat.errand_id);
+      }
+    }
   }
 
   fetchMessages(chatId: number) {
@@ -178,28 +239,28 @@ export class ChatComponent implements OnInit, OnDestroy {
     return this.selectedChat != null && this.selectedChat['user_id'] === this.currentUserId;
   }
 
-markChatAsDone() {
-  if (this.selectedChat) {
-    // Provide default values for rating and rateNotes if not available
-    this.dataService.markChatAsDone(this.selectedChat.id, 0, '').subscribe(() => {
-      this.selectedChat!.status = 'done';
-      this.errandIsDone = true;
-      this.dataService.errandDone(this.selectedChat!.id).subscribe({
-        next: () => {
-          Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Errand marked as done!',
-            confirmButtonText: 'OK'
-          });
-        },
-        error: (err) => {
-          console.error('Error archiving chat:', err);
-        }
+  markChatAsDone() {
+    if (this.selectedChat) {
+      // Provide default values for rating and rateNotes if not available
+      this.dataService.markChatAsDone(this.selectedChat.id, 0, '').subscribe(() => {
+        this.selectedChat!.status = 'done';
+        this.errandIsDone = true;
+        this.dataService.errandDone(this.selectedChat!.id).subscribe({
+          next: () => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Success',
+              text: 'Errand marked as done!',
+              confirmButtonText: 'OK'
+            });
+          },
+          error: (err) => {
+            console.error('Error archiving chat:', err);
+          }
+        });
       });
-    });
+    }
   }
-}
 
   sendMessage() {
     if (this.newMessage.trim() && this.selectedChat && this.currentUserId !== null) {
@@ -213,22 +274,24 @@ markChatAsDone() {
       this.newMessage = '';
     }
   }
-onRateSubmit(event: { rating: number, notes: string }) {
-  if (!this.selectedChat) return;
 
-  // 1. First, rate the chat (update rating and notes)
-  this.dataService.rateChat(this.selectedChat.id, event.rating, event.notes).subscribe({
-    next: () => {
-      // 2. Then, mark the chat as done (move to history)
-      this.markChatAsDone();
-      this.isRateModalOpen = false;
-    },
-    error: (err) => {
-      // Handle error (optional: show error message)
-      console.error('Failed to rate chat:', err);
-    }
-  });
-}
+  onRateSubmit(event: { rating: number, notes: string }) {
+    if (!this.selectedChat) return;
+
+    // 1. First, rate the chat (update rating and notes)
+    this.dataService.rateChat(this.selectedChat.id, event.rating, event.notes).subscribe({
+      next: () => {
+        // 2. Then, mark the chat as done (move to history)
+        this.markChatAsDone();
+        this.isRateModalOpen = false;
+      },
+      error: (err) => {
+        // Handle error (optional: show error message)
+        console.error('Failed to rate chat:', err);
+      }
+    });
+  }
+
   sendImage() {
     if (this.selectedFile && this.selectedChat && this.currentUserId !== null) {
       const formData = new FormData();
@@ -333,5 +396,13 @@ onRateSubmit(event: { rating: number, notes: string }) {
   removeSelectedFile() {
     this.selectedFile = null;
     this.previewUrl = null;
+  }
+
+  toggleErrandDetails() {
+    this.isErrandDetailsExpanded = !this.isErrandDetailsExpanded;
+  }
+
+  toggleSidebar() {
+    this.isSidebarVisible = !this.isSidebarVisible;
   }
 }

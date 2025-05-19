@@ -1,7 +1,7 @@
 <div class="login-container">
-    <div class="row align-items-center">
+    <div class="row align-items-center w-100">
       <!-- Logo Section -->
-      <div class="col-md-6 text-center">
+      <div class="col-md-6 text-center mb-3 mb-md-0">
         <img src="assets/Sibat.png" alt="Logo" class="logo" />
       </div>
   
@@ -19,7 +19,7 @@
     <div class="card-body">
       <form (ngSubmit)="onSubmitLogin()" #loginForm="ngForm">
         <div class="mb-3">
-          <label for="log in username" class="form-label">log in Username</label>
+          <label for="log in username" class="form-label">Username</label>
           <input
             type="text"
             id="log in username"
@@ -61,32 +61,34 @@
 <div class="form-container register-form">
     <div class="card-body">
       <form (ngSubmit)="onSubmitRegister()" #registerForm="ngForm">
-        <div class="mb-3">
-          <label for="first-name" class="form-label">First Name</label>
-          <input
-            type="text"
-            id="first-name"
-            name="first_name"
-            class="form-control"
-            [(ngModel)]="firstName"
-            required
-            placeholder="Enter your first name"
-          />
+        <div class="row">
+          <div class="col-sm-6 mb-3">
+            <label for="first-name" class="form-label">First Name</label>
+            <input
+              type="text"
+              id="first-name"
+              name="first_name"
+              class="form-control"
+              [(ngModel)]="firstName"
+              required
+              placeholder="Enter your first name"
+            />
+          </div>
+          <div class="col-sm-6 mb-3">
+            <label for="last-name" class="form-label">Last Name</label>
+            <input
+              type="text"
+              id="last-name"
+              name="last_name"
+              class="form-control"
+              [(ngModel)]="lastName"
+              required
+              placeholder="Enter your last name"
+            />
+          </div>
         </div>
         <div class="mb-3">
-          <label for="last-name" class="form-label">Last Name</label>
-          <input
-            type="text"
-            id="last-name"
-            name="last_name"
-            class="form-control"
-            [(ngModel)]="lastName"
-            required
-            placeholder="Enter your last name"
-          />
-        </div>
-        <div class="mb-3">
-          <label for="register username" class="form-label">register Username</label>
+          <label for="register username" class="form-label">Username</label>
           <input
             type="text"
             id="register username"

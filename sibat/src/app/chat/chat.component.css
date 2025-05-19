@@ -423,3 +423,286 @@ mat-icon.selected {
     min-width: 90vw;
   }
 }
+
+/* Add these styles for the errand details section */
+.errand-details {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.errand-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding-bottom: 5px;
+}
+
+.errand-details-header:hover {
+  opacity: 0.8;
+}
+
+.errand-details h4 {
+  color: #333;
+  margin: 0;
+  font-size: 16px;
+}
+
+.toggle-icon {
+  color: #666;
+  transition: transform 0.3s ease;
+}
+
+.errand-info {
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  max-height: 500px; /* Maximum height when expanded */
+}
+
+.errand-info.collapsed {
+  max-height: 0;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.errand-info p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.status-done {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.status-pending {
+  color: #ff9800;
+  font-weight: bold;
+}
+
+/* Mobile responsiveness styles */
+@media (max-width: 768px) {
+  .chat-container {
+    flex-direction: column;
+    height: auto;
+    min-height: calc(100vh - 120px);
+    padding-bottom: 80px; /* Add padding to bottom to prevent content being hidden behind the button */
+  }
+
+  .chat-sidebar {
+    width: 100%;
+    max-height: 120px;
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .chat-sidebar h3 {
+    display: none; /* Hide the header on mobile to save space */
+  }
+
+  .chat-history-item {
+    display: inline-block;
+    width: auto;
+    margin-right: 10px;
+    margin-bottom: 0;
+    padding: 8px 15px;
+    flex-shrink: 0;
+  }
+
+  .chat-main {
+    height: calc(100vh - 150px);
+    padding: 10px;
+  }
+
+  .chat-messages {
+    max-height: calc(100vh - 280px);
+  }
+
+  .chat-message {
+    padding: 8px;
+    max-width: 85%;
+  }
+
+  .chat-message.sender {
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  .chat-message.receiver {
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  .message-timestamp {
+    font-size: 0.7em;
+  }
+
+  .input-container input[type="text"] {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .input-container button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .errand-details {
+    margin-bottom: 10px;
+  }
+
+  .errand-info p {
+    margin: 6px 0;
+    font-size: 13px;
+  }
+
+  /* Improve spacing for the mobile UI */
+  .chat-input {
+    padding: 8px;
+  }
+
+  .input-container label.upload-icon {
+    right: 45px;
+  }
+
+  .gallery-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Image sizing on mobile */
+  .clickable-photo {
+    max-width: 80px;
+    max-height: 80px;
+  }
+
+  .image-preview img {
+    max-width: 80px;
+    max-height: 80px;
+  }
+}
+
+/* Even smaller screens */
+@media (max-width: 480px) {
+  .chat-container {
+    min-height: calc(100vh - 100px);
+    border: none;
+    border-radius: 0;
+  }
+
+  .chat-sidebar {
+    max-height: 90px;
+    padding: 5px;
+  }
+
+  .chat-history-item {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .chat-main {
+    height: calc(100vh - 100px);
+    padding: 8px;
+  }
+
+  .chat-messages {
+    max-height: calc(100vh - 180px);
+    padding: 5px;
+  }
+
+  .chat-message {
+    max-width: 90%;
+    padding: 7px;
+    font-size: 13px;
+    margin: 4px 0;
+  }
+
+  .chat-main h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  
+  .errand-done-btn {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+
+  .errand-details-header h4 {
+    font-size: 14px;
+  }
+}
+
+/* Mobile Sidebar Toggle Button */
+.mobile-sidebar-toggle {
+  display: none;
+  position: fixed;
+  bottom: 20px; /* Position at the bottom instead of top */
+  left: 20px;
+  z-index: 100;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.mobile-sidebar-toggle:active {
+  transform: scale(0.95);
+  background-color: #0056b3;
+}
+
+@media (max-width: 768px) {
+  .mobile-sidebar-toggle {
+    display: flex;
+  }
+  
+  .chat-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80%;
+    height: 100%;
+    max-height: 100vh;
+    z-index: 200;
+    background-color: #f4f4f4;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  
+  .chat-sidebar.visible {
+    transform: translateX(0);
+  }
+  
+  .chat-sidebar h3 {
+    display: block;
+  }
+  
+  .chat-history-item {
+    display: block;
+    width: auto;
+    margin-bottom: 8px;
+  }
+  
+  .chat-main {
+    margin-top: 0;
+  }
+}

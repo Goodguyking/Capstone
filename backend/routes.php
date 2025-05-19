@@ -124,9 +124,11 @@ switch ($requestUri) {
         require_once 'routes/post.php';
         rateChat();
         break;
-
-
-
+        
+    case 'getErrandDetails':
+        require_once 'routes/get.php';
+        getErrandDetails();
+        break;
 
 
 

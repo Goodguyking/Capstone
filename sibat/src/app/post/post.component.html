@@ -43,10 +43,11 @@
     <mat-step>
       <ng-template matStepLabel>Summary</ng-template>
       <div class="summary">
+        <h1>This would be the initial price of the errand.</h1>
         <p>Base Price: ₱<span>{{ basePrice }}</span></p>
         <p>Service Charge (5%): ₱<span>{{ serviceCharge }}</span></p>
         <p>Delivery Charge: ₱<span>{{ deliveryCharge }}</span></p>
-        <p><strong>Total Price: ₱<span>{{ totalPrice }}</span></strong></p>
+        <p><strong>Initial Price: ₱<span>{{ totalPrice }}</span> + the errand recipt cost</strong></p>
       </div>
 
       <div>

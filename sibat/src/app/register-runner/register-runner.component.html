@@ -16,49 +16,70 @@
     <mat-horizontal-stepper linear #stepper>
       <!-- Step 1: Upload Documents & Personal Info -->
       <mat-step [stepControl]="firstFormGroup">
+        <ng-template matStepLabel>Documents & Info</ng-template>
         <form [formGroup]="firstFormGroup">
             <div class="mb-3">
-                <label class="form-label">Upload Valid ID #1</label>
-                <input type="file" class="form-control input-field" (change)="onFileSelect($event, 'validId1')" required />
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Upload Valid ID #2</label>
-                <input type="file" class="form-control input-field" (change)="onFileSelect($event, 'validId2')" required />
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Upload Police/NBI Clearance</label>
-                <input type="file" class="form-control input-field" (change)="onFileSelect($event, 'policeClearance')" required />
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Upload Barangay Clearance</label>
-                <input type="file" class="form-control input-field" (change)="onFileSelect($event, 'barangayClearance')" required />
-              </div>
+                <label class="form-label">Upload Valid ID #1 <small class="text-muted">(JPG, JPEG, PNG only)</small></label>
+                <input type="file" class="form-control input-field" (change)="onFileSelect($event, 'validId1')" accept="image/jpeg,image/jpg,image/png" required />
+                <div *ngIf="selectedFiles['validId1']" class="text-success mt-1">File uploaded: {{selectedFiles['validId1'].name}}</div>
+                <div *ngIf="fileErrors['validId1']" class="text-danger mt-1">{{fileErrors['validId1']}}</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Upload Valid ID #2 <small class="text-muted">(JPG, JPEG, PNG only)</small></label>
+                <input type="file" class="form-control input-field" (change)="onFileSelect($event, 'validId2')" accept="image/jpeg,image/jpg,image/png" required />
+                <div *ngIf="selectedFiles['validId2']" class="text-success mt-1">File uploaded: {{selectedFiles['validId2'].name}}</div>
+                <div *ngIf="fileErrors['validId2']" class="text-danger mt-1">{{fileErrors['validId2']}}</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Upload Police/NBI Clearance <small class="text-muted">(PDF, JPG, JPEG, PNG)</small></label>
+                <input type="file" class="form-control input-field" (change)="onFileSelect($event, 'policeClearance')" accept="image/jpeg,image/jpg,image/png,application/pdf" required />
+                <div *ngIf="selectedFiles['policeClearance']" class="text-success mt-1">File uploaded: {{selectedFiles['policeClearance'].name}}</div>
+                <div *ngIf="fileErrors['policeClearance']" class="text-danger mt-1">{{fileErrors['policeClearance']}}</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Upload Barangay Clearance <small class="text-muted">(PDF, JPG, JPEG, PNG)</small></label>
+                <input type="file" class="form-control input-field" (change)="onFileSelect($event, 'barangayClearance')" accept="image/jpeg,image/jpg,image/png,application/pdf" required />
+                <div *ngIf="selectedFiles['barangayClearance']" class="text-success mt-1">File uploaded: {{selectedFiles['barangayClearance'].name}}</div>
+                <div *ngIf="fileErrors['barangayClearance']" class="text-danger mt-1">{{fileErrors['barangayClearance']}}</div>
+            </div>
               
           <div class="mb-3">
             <label class="form-label">Mode of Transport</label>
-            <mat-select formControlName="modeOfTransport" required>
-              <mat-option value="bicycle">Bicycle</mat-option>
-              <mat-option value="motorcycle">Motorcycle</mat-option>
-              <mat-option value="car">Car</mat-option>
-              <mat-option value="on-foot">On Foot</mat-option>
-            </mat-select>
+            <select class="form-control input-field" formControlName="modeOfTransport" required>
+              <option value="" disabled>Select mode of transport</option>
+              <option value="bicycle">Bicycle</option>
+              <option value="motorcycle">Motorcycle</option>
+              <option value="car">Car</option>
+              <option value="on-foot">On Foot</option>
+            </select>
+            <div *ngIf="firstFormGroup.get('modeOfTransport')?.invalid && firstFormGroup.get('modeOfTransport')?.touched" class="text-danger">
+              Mode of transport is required
+            </div>
           </div>
           <div class="mb-3">
             <label class="form-label">Emergency Contact Person</label>
             <input type="text" class="form-control input-field" formControlName="emergencyContactPerson" placeholder="Enter full name" required />
+            <div *ngIf="firstFormGroup.get('emergencyContactPerson')?.invalid && firstFormGroup.get('emergencyContactPerson')?.touched" class="text-danger">
+              Emergency contact person is required
+            </div>
           </div>
           <div class="mb-3">
             <label class="form-label">Emergency Contact Phone Number</label>
-            <input type="tel" class="form-control input-field" formControlName="emergencyContactNumber" placeholder="Enter phone number" required />
+            <input type="tel" class="form-control input-field" formControlName="emergencyContactNumber" placeholder="Enter phone number (11 digits)" required />
+            <div *ngIf="firstFormGroup.get('emergencyContactNumber')?.invalid && firstFormGroup.get('emergencyContactNumber')?.touched" class="text-danger">
+              <span *ngIf="firstFormGroup.get('emergencyContactNumber')?.errors?.['required']">Emergency contact number is required</span>
+              <span *ngIf="firstFormGroup.get('emergencyContactNumber')?.errors?.['pattern']">Please enter a valid 11-digit phone number</span>
+            </div>
           </div>
           <div class="d-flex justify-content-end">
-            <button mat-button matStepperNext color="primary">Next</button>
+            <button mat-button matStepperNext color="primary" [disabled]="firstFormGroup.invalid || !allFilesSelected() || hasAnyFileErrors()">Next</button>
           </div>
         </form>
       </mat-step>
   
       <!-- Step 2: Terms & Agreement -->
       <mat-step [stepControl]="secondFormGroup">
+        <ng-template matStepLabel>Terms & Agreement</ng-template>
         <form [formGroup]="secondFormGroup" (ngSubmit)="onSubmit()">
           <h2>Terms & Conditions</h2>
           <p>By registering, you agree to the following:</p>
@@ -69,10 +90,15 @@
             <li>Violation of terms may lead to suspension.</li>
             <li>Your data is used only for task assignments.</li>
           </ul>
-          <mat-checkbox formControlName="agreement">I accept the terms and conditions</mat-checkbox>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" formControlName="agreement" id="agreement">
+            <label class="form-check-label" for="agreement">
+              I accept the terms and conditions
+            </label>
+          </div>
           <div class="d-flex justify-content-between mt-3">
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button color="primary" type="submit" [disabled]="!secondFormGroup.get('agreement')?.value">Submit</button>
+            <button mat-button matStepperPrevious type="button">Back</button>
+            <button class="btn btn-primary" type="submit" [disabled]="!secondFormGroup.get('agreement')?.value">Submit</button>
           </div>
         </form>
       </mat-step>

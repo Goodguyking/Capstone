@@ -6,150 +6,215 @@
     align-items: center;
     background: radial-gradient(circle, #EAE3C3 30%, #fff 70%);
     padding: 20px;
-  }
+    overflow-y: auto; /* Allow scrolling on small screens */
+}
   
-  /* Logo Styling */
-  .logo {
-    max-width: 500px;
+/* Logo Styling */
+.logo {
+    max-width: 100%; /* Make logo responsive */
     height: auto;
     display: block;
     margin: 20px auto;
-  }
+}
   
-  /* Logo Container */
-  .logo-container {
+/* Logo Container */
+.logo-container {
     text-align: center;
     margin-right: 30px;
-  }
+}
   
-  /* Card Styling */
-  .card {
+/* Card Styling */
+.card {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border: none;
-    padding: 30px;
+    padding: 20px; /* Reduced padding for small screens */
     background: #fff;
     overflow: hidden;
     width: 100%;
     z-index: 1;
-  }
+}
   
-  /* Form Wrapper (for animation) */
-  .form-wrapper {
+/* Form Wrapper (for animation) */
+.form-wrapper {
     display: flex;
     width: 200%;
     transition: transform 0.5s ease-in-out;
-  }
+}
   
-  /* Each form takes half width */
-  .form-container {
+/* Each form takes half width */
+.form-container {
     width: 50%;
-    padding: 20px;
-  }
+    padding: 10px; /* Reduced padding for small screens */
+}
   
-  /* Move to Register Form */
-  .slide-right {
+/* Move to Register Form */
+.slide-right {
     transform: translateX(-50%);
-  }
+}
   
-  /* Button Styling */
-  .btn-primary {
+/* Button Styling */
+.btn-primary {
     background-color: #007bff;
     border-color: #007bff;
-  }
+}
   
-  .btn-primary:hover {
+.btn-primary:hover {
     background-color: #0056b3;
     border-color: #0056b3;
-  }
+}
   
-  /* Secondary Button */
-  .btn-secondary {
+/* Secondary Button */
+.btn-secondary {
     background-color: #6c757d;
     border-color: #6c757d;
-  }
+}
   
-  .btn-secondary:hover {
+.btn-secondary:hover {
     background-color: #5a6268;
     border-color: #545b62;
-  }
+}
   
-  /* Forgot Password Link */
-  .text-primary {
+/* Forgot Password Link */
+.text-primary {
     color: #007bff !important;
     text-decoration: none;
-  }
+}
   
-  .text-primary:hover {
+.text-primary:hover {
     text-decoration: underline;
-  }
+}
   
-  h2 {
+h2 {
     color: #545b62;
     font-family: 'Boldonse', sans-serif;
-  }
+    font-size: 1.8rem; /* Responsive font size */
+}
 
-
-  .spear-container {
+.spear-container {
     position: fixed; /* Fix to the viewport */
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     overflow: hidden;
-
-  }
+    z-index: 0; /* Ensure it stays behind content */
+}
   
-  .spear {
+.spear {
     position: absolute;
-    width: 200px; /* Adjust as needed */
+    width: 150px; /* Smaller by default */
     height: auto;
     opacity: 0.3; /* Make them subtle */
     animation: panSpear 8s linear infinite;
-  }
+}
   
-  @keyframes panSpear {
+@keyframes panSpear {
     0% {
-      transform: translateX(-1000%);
+        transform: translateX(-1000%);
     }
     100% {
-      transform: translateX(1000%);
+        transform: translateX(1000%);
     }
-  }
+}
   
-  /* Position each spear at different heights and speeds */
-  .spear:nth-child(1) {
+/* Position each spear at different heights and speeds */
+.spear:nth-child(1) {
     top: 5%;
     animation-duration: 6s;
-  }
+}
   
-  .spear:nth-child(2) {
+.spear:nth-child(2) {
     top: 25%;
     animation-duration: 7s;
-  }
+}
   
-  .spear:nth-child(3) {
+.spear:nth-child(3) {
     top: 50%;
     animation-duration: 8s;
-  }
+}
   
-  .spear:nth-child(4) {
+.spear:nth-child(4) {
     top: 70%;
     animation-duration: 9s;
-  }
+}
   
-  .spear:nth-child(5) {
+.spear:nth-child(5) {
     top: 80%;
     animation-duration: 10s;
-  }
+}
   
-
-  .success-snackbar {
+.success-snackbar {
     background-color: #4caf50 !important;
     color: white;
-  }
+}
   
-  .error-snackbar {
+.error-snackbar {
     background-color: #f44336 !important;
     color: white;
-  }
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 991px) {
+    .row.align-items-center {
+        flex-direction: column;
+    }
+    
+    .col-md-6 {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .logo {
+        max-width: 300px;
+        margin-bottom: 30px;
+    }
+}
+
+@media (max-width: 767px) {
+    .card {
+        padding: 15px;
+    }
+    
+    .logo {
+        max-width: 250px;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    .spear {
+        width: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 10px;
+    }
+    
+    .card {
+        padding: 10px;
+    }
+    
+    .form-container {
+        padding: 5px;
+    }
+    
+    .logo {
+        max-width: 200px;
+    }
+    
+    h2 {
+        font-size: 1.2rem;
+    }
+}
+
+/* Fix form height issues on small screens */
+@media (max-height: 700px) {
+    .login-container {
+        height: auto;
+        min-height: 100vh;
+    }
+}
   

@@ -19,7 +19,7 @@ export class PostComponent implements OnInit {
   collectingMarker: L.Marker | null = null;
   deliveryMarker: L.Marker | null = null;
 
-  basePrice: number = 100; // Example base price
+  basePrice: number = 30; // Example base price
   serviceCharge: number = 0;
   deliveryCharge: number = 50; // Example delivery charge
   totalPrice: number = 0;
@@ -71,7 +71,7 @@ export class PostComponent implements OnInit {
   calculateTotalPrice() {
     const tip = this.detailsForm.get('tip')?.value || 0;
     this.serviceCharge = (this.basePrice + tip) * 0.05; // 5% service charge
-    this.totalPrice = this.basePrice + this.serviceCharge + this.deliveryCharge + tip;
+    this.totalPrice = this.basePrice + this.serviceCharge + this.deliveryCharge;
   }
 
   onStepChange(event: any) {
@@ -100,7 +100,7 @@ export class PostComponent implements OnInit {
             Swal.fire({
               icon: 'success',
               title: 'Success',
-              text: `Errand posted successfully! Errand ID: ${errandId}`,
+              text: `Errand posted successfully!`,
               confirmButtonText: 'OK',
             }).then(() => {
               Swal.fire({

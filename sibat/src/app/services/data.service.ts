@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class DataService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = "https://sibatapi2.loophole.site/Capstone/backend/routes.php";
 
   constructor(private http: HttpClient) {}
 
@@ -408,7 +408,7 @@ export class DataService {
 
 
   uploadImage(formData: FormData): Observable<any> {
-    return this.http.post(`http://localhost:3000/upload`, formData);
+    return this.http.post(`https://chatapi.loophole.site/upload`, formData);
   }
 
 
@@ -416,7 +416,7 @@ export class DataService {
 
 markChatAsDone(chatId: number, rating: number, rateNotes: string = ''): Observable<any> {
   return this.http.post(
-    `http://localhost:3000/api/chats/${chatId}/done`,
+    `https://chatapi.loophole.site/api/chats/${chatId}/done`,
     { rating, rateNotes }
   );
 }

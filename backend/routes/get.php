@@ -61,8 +61,8 @@ function getUserData() {
 
         // Append full path to profile picture
         $user['profilepic'] = $user['profilepic'] 
-            ? "http://localhost/CAPSTONE/backend/uploads/" . $user['profilepic']
-            : "http://localhost/CAPSTONE/backend/uploads/default_profile.png";
+            ? "https://sibatapi2.loophole.site/CAPSTONE/backend/uploads/" . $user['profilepic']
+            : "https://sibatapi2.loophole.site/CAPSTONE/backend/uploads/default_profile.png";
 
         echo json_encode($user);
     } else {
@@ -122,8 +122,8 @@ function getAllUsers() {
     while ($row = $result->fetch_assoc()) {
         // Append full path to profile picture
         $row['profilepic'] = $row['profilepic'] 
-            ? "http://localhost/CAPSTONE/backend/uploads/" . $row['profilepic']
-            : "http://localhost/CAPSTONE/backend/uploads/default_profile.png";
+            ? "https://sibatapi2.loophole.site/CAPSTONE/backend/uploads/" . $row['profilepic']
+            : "https://sibatapi2.loophole.site/CAPSTONE/backend/uploads/default_profile.png";
 
         $users[] = $row;
     }
@@ -168,10 +168,10 @@ function getRunnerApplications() {
 
     // Fetch all runner applications
     $stmt = $conn->prepare("SELECT application_id, userid, mode_of_transport, emergency_contact_person, emergency_contact_number, status, 
-        CONCAT('http://localhost/capstone/backend/uploads/Documents/', valid_id_1) AS valid_id_1_url,
-        CONCAT('http://localhost/capstone/backend/uploads/Documents/', valid_id_2) AS valid_id_2_url,
-        CONCAT('http://localhost/capstone/backend/uploads/Documents/', police_clearance) AS police_clearance_url,
-        CONCAT('http://localhost/capstone/backend/uploads/Documents/', barangay_clearance) AS barangay_clearance_url
+        CONCAT('https://sibatapi2.loophole.site/capstone/backend/uploads/Documents/', valid_id_1) AS valid_id_1_url,
+        CONCAT('https://sibatapi2.loophole.site/capstone/backend/uploads/Documents/', valid_id_2) AS valid_id_2_url,
+        CONCAT('https://sibatapi2.loophole.site/capstone/backend/uploads/Documents/', police_clearance) AS police_clearance_url,
+        CONCAT('https://sibatapi2.loophole.site/capstone/backend/uploads/Documents/', barangay_clearance) AS barangay_clearance_url
         FROM runner_applications");
     $stmt->execute();
     $result = $stmt->get_result();
@@ -250,7 +250,7 @@ function getChatHistory() {
 
     $userId = intval($decodedPayload['uid']);
 
-    // Fetch chat history for the user, including the latest message details
+    // Fetch chat history for the user, including the latest message details and errand_id
     $stmt = $conn->prepare("
         SELECT 
             c.id AS chat_id, 
@@ -258,6 +258,10 @@ function getChatHistory() {
                 WHEN c.runner_id = ? THEN u2.first_name 
                 ELSE u1.first_name 
             END AS name,
+            c.errand_id,
+            c.runner_id,
+            c.user_id,
+            c.status,
             m.content AS latest_message,
             m.type AS latest_message_type,
             m.filename AS latest_message_filename,
@@ -411,6 +415,77 @@ function getIsUser() {
         "isUser" => $result,
         "userId" => $result ? $userid : null
     ]);
+}
+
+function getErrandDetails() {
+    global $conn;
+
+    // Get the errand ID from the request
+    $errandId = intval($_GET['errand_id'] ?? 0);
+
+    if ($errandId === 0) {
+        echo json_encode(["error" => "Invalid errand ID"]);
+        exit;
+    }
+
+    // Get the Authorization header from the request
+    $headers = getallheaders();
+    if (!isset($headers['Authorization'])) {
+        echo json_encode(["error" => "Missing token"]);
+        exit;
+    }
+
+    // Extract token from "Bearer <token>"
+    $token = str_replace("Bearer ", "", $headers['Authorization']);
+    $secretKey = 'your-secret-key'; // Use your actual secret key
+
+    // Verify the token
+    $decodedPayload = verifyJWT($token, $secretKey);
+
+    if (!$decodedPayload || !isset($decodedPayload['uid'])) {
+        echo json_encode(["error" => "Invalid or expired token"]);
+        exit;
+    }
+
+    $userId = intval($decodedPayload['uid']);
+
+    // Fetch the errand details along with user and runner information
+    $stmt = $conn->prepare("SELECT e.*, 
+                            u.first_name as user_first_name, u.last_name as user_last_name, 
+                            r.first_name as runner_first_name, r.last_name as runner_last_name
+                            FROM errands e 
+                            LEFT JOIN users u ON e.userid = u.userid
+                            LEFT JOIN users r ON e.runner_id = r.userid
+                            WHERE e.errand_id = ?");
+    $stmt->bind_param("i", $errandId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) {
+        echo json_encode(["error" => "Errand not found"]);
+        exit;
+    }
+
+    $errand = $result->fetch_assoc();
+
+    // Format the response data
+    $response = [
+        'errand_id' => $errand['errand_id'],
+        'title' => $errand['title'],
+        'description' => $errand['description'],
+        'location' => $errand['location'],
+        'payment' => $errand['payment'],
+        'status' => $errand['status'],
+        'user_id' => $errand['user_id'],
+        'runner_id' => $errand['runner_id'],
+        'user_name' => $errand['user_first_name'] . ' ' . $errand['user_last_name'],
+        'runner_name' => $errand['runner_first_name'] ? $errand['runner_first_name'] . ' ' . $errand['runner_last_name'] : null,
+        'created_at' => $errand['created_at'],
+        'updated_at' => $errand['updated_at']
+    ];
+
+    echo json_encode($response);
+    $stmt->close();
 }
 
 
