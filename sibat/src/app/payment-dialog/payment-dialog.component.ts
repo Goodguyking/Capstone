@@ -16,7 +16,7 @@ export class PaymentDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<PaymentDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { amount: number, weekStart: string, weekEnd: string },
+    @Inject(MAT_DIALOG_DATA) public data: { amount: number, date: string, runnerId: number },
     private dataService: DataService
   ) { }
 
@@ -66,9 +66,8 @@ export class PaymentDialogComponent implements OnInit {
 
     const formData = new FormData();
     formData.append('proof', this.proofFile);
-    formData.append('weekStart', this.data.weekStart);
-    formData.append('weekEnd', this.data.weekEnd);
-    formData.append('runnerId', this.runnerId.toString()); // send same runnerId as TasksComponent
+    formData.append('date', this.data.date);
+    formData.append('runnerId', this.data.runnerId.toString()); // send same runnerId as TasksComponent
 
     this.dataService.uploadRemittanceProof(formData).subscribe(
       (res: any) => {

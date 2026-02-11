@@ -92,6 +92,11 @@ switch ($requestUri) {
         require_once 'routes/post.php';
         acceptErrand();
         break;
+    
+    case 'cancelErrand':
+        require_once 'routes/post.php';
+        cancelErrand();
+        break;
         
     case 'getChatHistory':
         require_once 'routes/get.php';

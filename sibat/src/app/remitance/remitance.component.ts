@@ -25,12 +25,6 @@ interface Errand {
   proof?: string;  
 }
 
-interface WeekRange {
-  start: Date;
-  end: Date;
-  display: string;
-}
-
 @Component({
   selector: 'app-remitance',
   templateUrl: './remitance.component.html',
@@ -40,11 +34,9 @@ export class RemitanceComponent implements OnInit {
 
   errands: Errand[] = [];
   filteredErrands: Errand[] = [];
-  weeklyRemittance: number = 0;
-  weeklyEarnings: number = 0;
-
-  weeks: WeekRange[] = [];
-  selectedWeek?: WeekRange;
+  dailyRemittance: number = 0;
+  dailyEarnings: number = 0;
+  selectedDate: Date = new Date();
 
   constructor(private dataService: DataService, private dialog: MatDialog) { }
 
@@ -64,64 +56,48 @@ export class RemitanceComponent implements OnInit {
           delivery_charge: Number(r.delivery_charge) || 0,
           total_price: Number(r.total_price) || 0
         }));
-        this.generateWeeks();
-        // default to most recent week
-        if (this.weeks.length > 0) {
-          this.selectWeek(this.weeks[0]);
-        }
+        // Filter for today by default
+        this.onDateSelected();
       },
       err => console.error('Error fetching errands', err)
     );
   }
 
-  generateWeeks() {
-    const now = new Date();
-    const errandsSorted = [...this.errands].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-
-    const firstErrandDate = errandsSorted.length > 0 ? new Date(errandsSorted[errandsSorted.length -1].created_at) : new Date();
-    const weeks: WeekRange[] = [];
-
-    let currentEnd = new Date(now);
-    currentEnd.setHours(23, 59, 59, 999);
-
-    while (currentEnd >= firstErrandDate) {
-      const currentStart = new Date(currentEnd);
-      currentStart.setDate(currentEnd.getDate() - 6);
-      currentStart.setHours(0,0,0,0);
-
-      const display = `${this.formatMonthDay(currentStart)} - ${this.formatMonthDay(currentEnd)}, ${currentEnd.getFullYear()}`;
-      weeks.push({ start: currentStart, end: currentEnd, display });
-
-      currentEnd = new Date(currentStart);
-      currentEnd.setDate(currentEnd.getDate() - 1);
-      currentEnd.setHours(23, 59, 59, 999);
+  onDateSelected() {
+    if (!this.selectedDate) {
+      this.filteredErrands = [];
+      this.calculateDailyStats();
+      return;
     }
 
-    this.weeks = weeks;
-  }
+    const selectedDateOnly = new Date(this.selectedDate);
+    selectedDateOnly.setHours(0, 0, 0, 0);
 
-  selectWeek(week: WeekRange) {
-    this.selectedWeek = week;
     this.filteredErrands = this.errands.filter(e => {
-      const created = new Date(e.created_at);
-      return created >= week.start && created <= week.end;
+      const errandDate = new Date(e.created_at);
+      errandDate.setHours(0, 0, 0, 0);
+      return errandDate.getTime() === selectedDateOnly.getTime();
     });
-    this.calculateWeeklyStats();
+
+    this.calculateDailyStats();
   }
 
-  calculateWeeklyStats() {
-    const earnings = this.filteredErrands.reduce((sum, e) => {
+  calculateDailyStats() {
+    // Only include items that are NOT remitted
+    const nonRemittedErrands = this.filteredErrands.filter(e => e.remitted !== 'Remitted');
+
+    const earnings = nonRemittedErrands.reduce((sum, e) => {
       const v = Number(e.base_price) || 0;
       return sum + v;
     }, 0);
 
-    const remittance = this.filteredErrands.reduce((sum, e) => {
+    const remittance = nonRemittedErrands.reduce((sum, e) => {
       const v = Number(e.service_charge) || 0;
       return sum + v;
     }, 0);
 
-    this.weeklyEarnings = Number(earnings.toFixed(2));
-    this.weeklyRemittance = Number(remittance.toFixed(2));
+    this.dailyEarnings = Number(earnings.toFixed(2));
+    this.dailyRemittance = Number(remittance.toFixed(2));
   }
 
   formatDate(date: string): string {
@@ -129,24 +105,22 @@ export class RemitanceComponent implements OnInit {
     return d.toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour:'2-digit', minute:'2-digit', hour12: true });
   }
 
-  formatMonthDay(date: Date): string {
-    return date.toLocaleString('en-US', { month: 'short', day: 'numeric' });
-  }
+
 
 openPaymentDialog() {
-  if (!this.selectedWeek) {
-    alert('Please select a week first');
+  if (!this.selectedDate) {
+    alert('Please select a date first');
     return;
   }
 
-  const runnerId = Number(localStorage.getItem('userId')); // get logged-in runner ID
+  const runnerId = Number(localStorage.getItem('userid')); // get logged-in runner ID
+  const selectedDateStr = this.selectedDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
 
   const dialogRef = this.dialog.open(PaymentDialogComponent, {
     width: '400px',
     data: {
-      amount: this.weeklyRemittance,
-      weekStart: this.selectedWeek.start.toISOString(),
-      weekEnd: this.selectedWeek.end.toISOString(),
+      amount: this.dailyRemittance,
+      date: selectedDateStr,
       runnerId: runnerId
     }
   });

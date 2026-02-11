@@ -7,6 +7,7 @@
         <h3>Tip: ₱{{ errand.tip }}</h3>
         <p>{{ errand.task_description }}</p>
         <p><strong>Collecting:</strong> {{ errand.collecting_location }}</p>
+        <p class="timestamp"><small>Posted: {{ errand.created_at | date:'MMM dd, yyyy - hh:mm a' }}</small></p>
       </div>
       <button class="toggle-details" (click)="errand.showDetails = !errand.showDetails">
         {{ errand.showDetails ? 'Hide Details' : 'View Details' }}

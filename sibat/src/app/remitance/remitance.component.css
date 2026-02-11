@@ -3,28 +3,29 @@
   font-family: Arial, sans-serif;
 }
 
-.week-tabs {
+.date-filter {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
-  margin-bottom: 15px;
-  gap: 10px;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
-.week-tabs button {
+.date-filter label {
+  font-weight: bold;
+  color: #333;
+}
+
+.date-filter input {
   padding: 8px 12px;
-  border: 1px solid #007bff;
-  border-radius: 5px;
-  background: white;
-  cursor: pointer;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  min-width: 200px;
 }
 
-.week-tabs button.active {
-  background-color: #007bff;
-  color: white;
-}
-
-.weekly-stats {
+.daily-stats {
   text-align: center;
   margin-bottom: 20px;
 }

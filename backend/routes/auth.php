@@ -123,7 +123,8 @@ function handleLogin() {
     echo json_encode([
         "message" => "Login successful",
         "token" => $jwt,
-        "role" => $role
+        "role" => $role,
+        "userid" => $userId
     ]);
 
     $stmt->close();

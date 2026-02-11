@@ -627,6 +627,7 @@ function createErrand() {
 
 
 
+
 function acceptErrand() {
     global $conn;
 
@@ -659,6 +660,24 @@ function acceptErrand() {
 
     if ($errandId === 0 || $runnerId === 0) {
         echo json_encode(["error" => "Invalid errand ID or runner ID"]);
+        exit;
+    }
+
+    // Check if the errand is already accepted
+    $stmt = $conn->prepare("SELECT is_accepted FROM errands WHERE errand_id = ?");
+    $stmt->bind_param("i", $errandId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
+
+    if ($result->num_rows === 0) {
+        echo json_encode(["error" => "Errand not found"]);
+        exit;
+    }
+
+    $errand = $result->fetch_assoc();
+    if ($errand['is_accepted'] == 1) {
+        echo json_encode(["error" => "This errand has already been accepted by another runner"]);
         exit;
     }
 
@@ -702,6 +721,72 @@ function acceptErrand() {
     $stmt->close();
 }
 
+function cancelErrand() {
+    global $conn;
+
+    // Check if the request method is POST
+    if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+        echo json_encode(["error" => "Invalid request method"]);
+        exit;
+    }
+
+    // Get the Authorization header
+    $headers = getallheaders();
+    if (!isset($headers['Authorization'])) {
+        echo json_encode(["error" => "Missing token"]);
+        exit;
+    }
+
+    // Verify the token
+    $token = str_replace("Bearer ", "", $headers['Authorization']);
+    $secretKey = 'your-secret-key';
+    $decodedPayload = verifyJWT($token, $secretKey);
+
+    if (!$decodedPayload || !isset($decodedPayload['uid'])) {
+        echo json_encode(["error" => "Invalid or expired token"]);
+        exit;
+    }
+
+    // Get the JSON payload
+    $data = json_decode(file_get_contents("php://input"), true);
+    
+    if (!$data || !isset($data['errand_id'])) {
+        echo json_encode(["error" => "Invalid input data"]);
+        exit;
+    }
+
+    $errandId = intval($data['errand_id']);
+    $userId = intval($decodedPayload['uid']);
+
+    // Verify that the user owns this errand
+    $stmt = $conn->prepare("SELECT userid FROM errands WHERE errand_id = ?");
+    $stmt->bind_param("i", $errandId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) {
+        echo json_encode(["error" => "Errand not found"]);
+        exit;
+    }
+
+    $errand = $result->fetch_assoc();
+    if ($errand['userid'] != $userId) {
+        echo json_encode(["error" => "Unauthorized to cancel this errand"]);
+        exit;
+    }
+
+    // Delete the errand
+    $stmt = $conn->prepare("DELETE FROM errands WHERE errand_id = ?");
+    $stmt->bind_param("i", $errandId);
+
+    if ($stmt->execute()) {
+        echo json_encode(["message" => "Errand cancelled and deleted successfully"]);
+    } else {
+        echo json_encode(["error" => "Failed to cancel errand"]);
+    }
+
+    $stmt->close();
+}
 
  
  
@@ -738,6 +823,13 @@ $stmt->bind_param(
     if (!$stmt->execute()) {
         echo json_encode(["error" => "Failed to archive chat"]);
         return;
+    }
+
+    // Update errand status to "done"
+    if ($chat['errand_id']) {
+        $stmt = $conn->prepare("UPDATE errands SET status = 'done' WHERE errand_id = ?");
+        $stmt->bind_param("i", $chat['errand_id']);
+        $stmt->execute();
     }
 
     // Move messages to messages_history
@@ -867,13 +959,12 @@ function uploadRemittanceProof() {
         exit;
     }
 
-    if (!isset($_FILES['proof']) || !isset($_POST['weekStart']) || !isset($_POST['weekEnd']) || !isset($_POST['runnerId'])) {
+    if (!isset($_FILES['proof']) || !isset($_POST['date']) || !isset($_POST['runnerId'])) {
         echo json_encode(["error" => "Missing required data"]);
         exit;
     }
 
-    $weekStart = $_POST['weekStart'];
-    $weekEnd = $_POST['weekEnd'];
+    $date = $_POST['date']; // Format: YYYY-MM-DD
     $runnerId = $_POST['runnerId'];
 
     // Handle file upload
@@ -889,13 +980,13 @@ function uploadRemittanceProof() {
         exit;
     }
 
-    // Update errands table instead of chat_history
+    // Update errands table for the specific date
     $stmt = $conn->prepare("
         UPDATE errands
         SET remitted = 'Pending', proof = ?
-        WHERE runner_id = ? AND created_at BETWEEN ? AND ?
+        WHERE runner_id = ? AND DATE(created_at) = ?
     ");
-    $stmt->bind_param('siss', $filename, $runnerId, $weekStart, $weekEnd);
+    $stmt->bind_param('sis', $filename, $runnerId, $date);
 
     if ($stmt->execute()) {
         $affected = $stmt->affected_rows;

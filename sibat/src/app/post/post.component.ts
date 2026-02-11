@@ -25,6 +25,9 @@ export class PostComponent implements OnInit {
   deliveryCharge: number = 50;  // Delivery charge
   serviceCharge: number = 0;    // 10% of base + delivery
   totalPrice: number = 0;       // Total including tip
+  
+  pollingInterval: any = null;  // Track polling interval for cancellation
+  currentErrandId: number | null = null;  // Track current errand ID
 
   mapOptions = {
     layers: [
@@ -99,6 +102,49 @@ export class PostComponent implements OnInit {
     }
   }
 
+  cancelErrand() {
+    if (!this.currentErrandId) {
+      Swal.fire('Error', 'No active errand to cancel', 'error');
+      return;
+    }
+
+    Swal.fire({
+      title: 'Cancel Errand?',
+      text: 'Are you sure you want to cancel this errand?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Yes, cancel it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.dataService.cancelErrand(this.currentErrandId!).subscribe(
+          (response: any) => {
+            // Clear polling
+            if (this.pollingInterval) {
+              clearInterval(this.pollingInterval);
+              this.pollingInterval = null;
+            }
+            
+            this.currentErrandId = null;
+            
+            Swal.fire(
+              'Cancelled!',
+              'Your errand has been cancelled and removed.',
+              'success'
+            ).then(() => {
+              this.router.navigate(['/home']);
+            });
+          },
+          (error) => {
+            console.error('Error cancelling errand:', error);
+            Swal.fire('Error', 'Failed to cancel errand', 'error');
+          }
+        );
+      }
+    });
+  }
+
   submitErrand() {
     if (!this.detailsForm.valid) return;
 
@@ -127,17 +173,29 @@ export class PostComponent implements OnInit {
           title: 'Success',
           text: 'Errand posted successfully!',
         }).then(() => {
+          this.currentErrandId = errandId;  // Store errand ID for cancellation
+          
           Swal.fire({
             title: 'Waiting for a runner...',
+            html: '<p>A sibat runner will soon accept your errand</p>',
             allowOutsideClick: false,
+            allowEscapeKey: false,
             didOpen: () => Swal.showLoading(),
+            footer: '<button id="cancelBtn" class="swal2-confirm" style="background-color: #dc3545; color: white;">Cancel Errand</button>'
           });
 
-          const polling = setInterval(() => {
+          // Handle cancel button click
+          document.getElementById('cancelBtn')?.addEventListener('click', () => {
+            this.cancelErrand();
+          });
+
+          this.pollingInterval = setInterval(() => {
             this.dataService.checkErrandStatus(errandId).subscribe(
               (status: any) => {
                 if (status?.is_accepted === 1) {
-                  clearInterval(polling);
+                  clearInterval(this.pollingInterval);
+                  this.pollingInterval = null;
+                  this.currentErrandId = null;
 
                   Swal.fire(
                     'Runner Found!',

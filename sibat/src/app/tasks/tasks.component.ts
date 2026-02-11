@@ -43,6 +43,15 @@ export class TasksComponent implements OnInit {
     }
   
     try {
+      // Check if the errand is already accepted
+      const errand = this.errands.find(e => e.errand_id === errandId);
+      if (errand && Number(errand.is_accepted) === 1) {
+        Swal.fire('Already Taken!', 'This errand has already been accepted by another runner.', 'warning');
+        // Remove this errand from the display
+        this.errands = this.errands.filter(e => e.errand_id !== errandId);
+        return;
+      }
+
       // Decode the token to get the userid
       const decodedToken: any = jwtDecode(token);
       const runnerId = decodedToken.userid || decodedToken.uid || decodedToken.id; // Adjust based on token structure
@@ -66,7 +75,15 @@ export class TasksComponent implements OnInit {
         },
         (error) => {
           console.error('Error accepting errand:', error);
-          Swal.fire('Error!', 'Failed to accept the errand. Please try again.', 'error');
+          // Check if the error message indicates the errand was already taken
+          const errorMessage = error.error?.error || error.error || 'Failed to accept the errand. Please try again.';
+          if (errorMessage.includes('already') || errorMessage.includes('accepted')) {
+            Swal.fire('Already Taken!', 'This errand has already been accepted by another runner.', 'warning');
+            // Remove this errand from the display
+            this.errands = this.errands.filter(e => e.errand_id !== errandId);
+          } else {
+            Swal.fire('Error!', errorMessage, 'error');
+          }
         }
       );
     } catch (error) {
@@ -74,4 +91,4 @@ export class TasksComponent implements OnInit {
       Swal.fire('Error!', 'Failed to decode token. Please log in again.', 'error');
     }
   }
-}
+  }

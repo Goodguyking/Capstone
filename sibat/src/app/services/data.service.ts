@@ -354,6 +354,22 @@ export class DataService {
     return this.http.post(`${this.apiUrl}?route=acceptErrand`, { errand_id: errandId, runner_id: runnerId }, { headers });
   }
 
+  cancelErrand(errandId: number): Observable<any> {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error({ error: 'Missing token' });
+      });
+    }
+    
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    
+    return this.http.post(`${this.apiUrl}?route=cancelErrand`, { errand_id: errandId }, { headers });
+  }
 
   fetchMessages(chatId: number): Observable<{ 
     message_id: number; 
@@ -469,8 +485,20 @@ getIsUser(): Observable<{ isUser: boolean, userId: number | null }> {
 
   // Get errands history for logged-in runner
   getErrandsHistory(): Observable<any> {
-    // No authorization required since JWT was removed
-    return this.http.get<any>(`${this.apiUrl}?route=getErrandsHistory`);
+    const token = localStorage.getItem('token');
+    const userid = localStorage.getItem('userid');
+    
+    if (!token || !userid) {
+      return new Observable((observer) => {
+        observer.error({ error: 'User not logged in or missing token' });
+      });
+    }
+    
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    
+    return this.http.get<any>(`${this.apiUrl}?route=getErrandsHistory&runnerid=${userid}`, { headers });
   }
 
 // data.service.ts

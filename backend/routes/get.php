@@ -573,7 +573,29 @@ function getErrandsHistory() {
         exit;
     }
 
-    // Fetch chat history with additional info
+    // Get the Authorization header from the request
+    $headers = getallheaders();
+    $runner_id = null;
+    
+    // Get runner ID from either JWT token or query parameter
+    if (isset($headers['Authorization'])) {
+        $token = str_replace("Bearer ", "", $headers['Authorization']);
+        $secretKey = 'your-secret-key';
+        $decodedPayload = verifyJWT($token, $secretKey);
+        
+        if ($decodedPayload && isset($decodedPayload['uid'])) {
+            $runner_id = intval($decodedPayload['uid']);
+        }
+    } elseif (isset($_GET['runnerid'])) {
+        $runner_id = intval($_GET['runnerid']);
+    }
+    
+    if (!$runner_id) {
+        echo json_encode(["error" => "Runner ID is required"]);
+        exit;
+    }
+
+    // Fetch chat history for the specific runner
     $stmt = $conn->prepare(
            "SELECT 
         ch.history_id,
@@ -586,8 +608,6 @@ function getErrandsHistory() {
         ch.updated_at,
         ch.errand_id,
         ch.rate_notes,
-        -- ch.remitted,
-        -- ch.proof,
         e.remitted AS remitted,
         e.proof AS proof,
         e.tip AS tip,
@@ -600,9 +620,11 @@ function getErrandsHistory() {
      FROM chat_history ch
      JOIN errands e ON ch.errand_id = e.errand_id
      JOIN users u ON e.userid = u.userid
+     WHERE ch.runner_id = ?
      ORDER BY ch.created_at DESC"
     );
-
+    
+    $stmt->bind_param("i", $runner_id);
     $stmt->execute();
     $result = $stmt->get_result();
 

@@ -45,6 +45,13 @@ h1 {
   font-size: 0.95rem;
 }
 
+.timestamp {
+  margin-top: 8px !important;
+  color: #888 !important;
+  font-size: 0.85rem !important;
+  font-style: italic;
+}
+
 /* Toggle button */
 .toggle-details {
   background-color: #007bff;

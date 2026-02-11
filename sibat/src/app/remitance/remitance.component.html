@@ -1,26 +1,27 @@
 <div class="remittance-container">
-  <h2>Runner Weekly Overview</h2>
+  <h2>Runner Remittance Overview</h2>
 
-  <div class="week-tabs">
-    <button *ngFor="let w of weeks" (click)="selectWeek(w)" [class.active]="selectedWeek === w">
-      {{ w.display }}
-    </button>
+  <div class="date-filter">
+    <label>Select Date:</label>
+    <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" (dateChange)="onDateSelected()" placeholder="Choose a date">
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
   </div>
 
-  <div class="weekly-stats">
+  <div class="daily-stats">
     <p>Total Earnings (Base Price Only): 
-      <span class="green-text">₱{{ weeklyEarnings | number:'1.2-2' }}</span>
+      <span class="green-text">₱{{ dailyEarnings | number:'1.2-2' }}</span>
     </p>
-    <p>Weekly Remittance (Service Charge Only):
-      <span class="green-text">₱{{ weeklyRemittance | number:'1.2-2' }}</span>
+    <p>Daily Remittance (Service Charge Only):
+      <span class="green-text">₱{{ dailyRemittance | number:'1.2-2' }}</span>
     </p>
     <button mat-raised-button color="primary" class="pay-button" (click)="openPaymentDialog()" 
-      [disabled]="weeklyRemittance === 0">
+      [disabled]="dailyRemittance === 0">
       Pay Remittance
     </button>
   </div>
 
-  <div *ngIf="filteredErrands.length === 0" class="empty">No errands found for this week.</div>
+  <div *ngIf="filteredErrands.length === 0" class="empty">No errands found for {{ selectedDate | date:'MMM dd, yyyy' }}.</div>
 
   <div class="table-container" *ngIf="filteredErrands.length > 0">
     <table class="errands-table">
