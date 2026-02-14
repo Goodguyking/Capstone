@@ -4,3 +4,34 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+/* Inside style.css or global styles */
+mat-sidenav-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* ensures it takes full viewport height */
+}
+
+.content-footer-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* content will grow to fill space above footer */
+}
+
+.content-wrapper {
+  flex: 1 0 auto; /* fills remaining vertical space */
+  padding: 1.2rem;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(8px);
+  border-radius: 18px;
+  margin: 1.2rem;
+  margin-top: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+app-footer {
+  flex-shrink: 0; /* prevents footer from shrinking */
+  width: 100%;
+}
+/* =========================
+   PAGE CONTAINER
+   ========================= */

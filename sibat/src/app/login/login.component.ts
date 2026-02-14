@@ -71,7 +71,7 @@ export class LoginComponent {
           this.router.navigate(['/runner']);
           break;
         case 'admin':
-          this.router.navigate(['/admin']);
+          this.router.navigate(['/admin/users']);
           break;
         default:
           this.router.navigate(['/home']); // Default to home if role is unknown

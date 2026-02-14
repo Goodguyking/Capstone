@@ -2,32 +2,37 @@
   <!-- Sidebar -->
   <mat-sidenav #sidenav [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile">
     <mat-nav-list>
-      <a mat-list-item routerLink="/home" routerLinkActive="active-link">Home</a>
-      <a mat-list-item routerLink="/profile" routerLinkActive="active-link">Profile</a>
-      <a mat-list-item routerLink="/chat" routerLinkActive="active-link">Chat</a>
+      <a mat-list-item routerLink="/home" routerLinkActive="active-link"><mat-icon>home</mat-icon> Home</a>
+      <a mat-list-item routerLink="/profile" routerLinkActive="active-link"><mat-icon>person</mat-icon>Profile</a>
+      <a mat-list-item routerLink="/chat" routerLinkActive="active-link"> <mat-icon>chat</mat-icon> Chat</a>
     </mat-nav-list>
-    <!-- Logout Button at the Bottom -->
-    <div>
+
+    <div class="logout-container">
       <a mat-list-item class="logout-button" (click)="logout()">Logout</a>
     </div>
   </mat-sidenav>
 
   <!-- Main Content -->
-  <mat-sidenav-content>
-    <!-- Toolbar -->
-    <mat-toolbar color="primary">
-      <button mat-icon-button (click)="sidenav.toggle()">
-        <mat-icon>menu</mat-icon>
-      </button>
-    </mat-toolbar>
+<mat-sidenav-content>
+  <!-- Toolbar -->
+  <mat-toolbar color="primary">
+    <button mat-icon-button (click)="sidenav.toggle()" class="menu-btn">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span class="logo">
+      <img src="assets/Sibat.png" alt="Logo" class="logo" />
+    </span>
+  </mat-toolbar>
 
-    <!-- Dynamic Content -->
-    <div class="content-container">
-      <span class="logo">
-        <img src="assets/Sibat.png" alt="Logo" class="logo" />
-      </span>
+  <!-- Wrapper for content + footer -->
+  <div class="content-footer-wrapper">
+    <div class="content-wrapper">
       <router-outlet></router-outlet>
     </div>
+
+    <app-footer></app-footer>
+  </div>
+
   </mat-sidenav-content>
 </mat-sidenav-container>
 

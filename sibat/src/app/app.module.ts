@@ -51,6 +51,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { RemitanceComponent } from './remitance/remitance.component';
 import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
 import { AllErrandsComponent } from './all-errands/all-errands.component';
+import { FooterComponent } from './footer/footer.component';
+import { ReportsComponent } from './reports/reports.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +75,8 @@ import { AllErrandsComponent } from './all-errands/all-errands.component';
     RemitanceComponent,
     PaymentDialogComponent,
     AllErrandsComponent,
+    FooterComponent,
+    ReportsComponent,
     
 
   ],

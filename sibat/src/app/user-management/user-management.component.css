@@ -1,36 +1,47 @@
+/* ========== USER MANAGEMENT ========== */
 .user-management {
   padding: 2rem;
-  font-family: Arial, sans-serif;
+  font-family: 'Poppins', Arial, sans-serif;
+  background: #f5f7fa;
+  min-height: calc(100vh - 80px); /* Adjust based on navbar height */
 }
 
 .user-management h1 {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   color: #2c3e50;
+  font-weight: 600;
+  font-size: 2rem;
+  text-align: center;
 }
 
+/* Status messages */
 .loading,
 .error,
 .no-users {
   text-align: center;
   font-size: 1.2rem;
   color: #7f8c8d;
+  margin-top: 2rem;
 }
 
 .error {
   color: #e74c3c;
+  font-weight: 500;
 }
 
+/* ========== USER TABLE ========== */
 .user-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
   margin-top: 1rem;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  background: transparent;
 }
 
 .user-table th,
 .user-table td {
-  border: 1px solid #ddd;
-  padding: 0.8rem;
+  padding: 1rem 0.75rem;
   text-align: left;
 }
 
@@ -38,65 +49,81 @@
   background-color: #34495e;
   color: white;
   text-transform: uppercase;
+  font-weight: 600;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
 
-.user-table tr:nth-child(odd) {
-  background-color: #f2f2f2;
-}
-
-.user-table tr:nth-child(even) {
-  background-color: #ffffff;
+.user-table tr {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
 }
 
 .user-table tr:hover {
-  background-color: #dcdcdc;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+}
+
+.user-table td {
+  vertical-align: middle;
 }
 
 .user-table img {
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
+  object-fit: cover;
   display: block;
   margin: 0 auto;
 }
 
+/* Action buttons */
 .edit-btn,
 .delete-btn,
 .change-password-btn {
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   margin-right: 0.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
 .edit-btn {
-  background-color: #3498db;
-  color: white;
+  background: #3498db;
+  color: #fff;
 }
 
 .edit-btn:hover {
-  background-color: #2980b9;
+  background: #2980b9;
+  transform: scale(1.05);
 }
 
 .delete-btn {
-  background-color: #e74c3c;
-  color: white;
+  background: #e74c3c;
+  color: #fff;
 }
 
 .delete-btn:hover {
-  background-color: #c0392b;
+  background: #c0392b;
+  transform: scale(1.05);
 }
 
 .change-password-btn {
-  background-color: #f1c40f;
-  color: white;
+  background: #f1c40f;
+  color: #fff;
 }
 
 .change-password-btn:hover {
-  background-color: #f39c12;
+  background: #f39c12;
+  transform: scale(1.05);
 }
 
-/* Modals */
+/* ========== MODALS ========== */
 .modal {
   position: fixed;
   top: 0;
@@ -108,23 +135,33 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  animation: fadeIn 0.3s ease forwards;
 }
 
 .modal-content {
-  background: white;
+  background: #ffffff;
   padding: 2rem;
-  border-radius: 8px;
-  width: 400px;
-  max-width: 90%;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  width: 450px;
+  max-width: 95%;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  animation: slideIn 0.3s ease forwards;
 }
 
 .form-input {
   width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
+  padding: 0.75rem;
+  margin-bottom: 1.2rem;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 8px rgba(52,152,219,0.3);
+  outline: none;
 }
 
 .modal-actions {
@@ -134,47 +171,65 @@
 }
 
 .save-btn {
-  background-color: #4caf50;
+  background-color: #2ecc71;
   color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
 .save-btn:hover {
-  background-color: #45a049;
+  background-color: #27ae60;
+  transform: scale(1.05);
 }
 
 .cancel-btn {
-  background-color: #f44336;
+  background-color: #e74c3c;
   color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
 .cancel-btn:hover {
-  background-color: #d32f2f;
+  background-color: #c0392b;
+  transform: scale(1.05);
 }
 
-/* Mobile Cards */
+/* ========== MOBILE CARDS ========== */
 .cards-container {
   display: none;
 }
 
 .card {
   background: #fff;
-  padding: 1rem;
+  padding: 1.2rem;
   margin-bottom: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.12);
 }
 
 .card p {
-  margin: 0.3rem 0;
+  margin: 0.4rem 0;
+  font-size: 0.95rem;
+  color: #2c3e50;
 }
 
 .card-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
-/* Profile pic in cards */
 .profile-pic-mobile {
   width: 80px;
   height: 80px;
@@ -183,7 +238,18 @@
   margin: 0.5rem auto;
 }
 
-/* Responsive */
+/* ========== ANIMATIONS ========== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
   .user-table {
     display: none;

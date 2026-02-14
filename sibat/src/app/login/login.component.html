@@ -30,18 +30,19 @@
             placeholder="Enter your username"
           />
         </div>
-        <div class="mb-3">
-          <label for="log in password" class="form-label">Password</label>
-          <input
-            type="password"
-            id="log in password"
-            name="password"
-            class="form-control"
-            [(ngModel)]="password"
-            required
-            placeholder="Enter your password"
-          />
-        </div>
+<div class="mb-3">
+  <label for="loginPassword" class="form-label">Password</label>
+  <input
+    type="password"
+    id="loginPassword"
+    name="login-password"
+    class="form-control"
+    [(ngModel)]="password"
+    required
+    placeholder="Enter your password"
+    autocomplete="new-password"
+  />
+</div>
         <button type="submit" class="btn btn-primary w-100" [disabled]="!loginForm.form.valid">
           Sign In
         </button>

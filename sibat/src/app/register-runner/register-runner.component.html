@@ -82,14 +82,26 @@
         <ng-template matStepLabel>Terms & Agreement</ng-template>
         <form [formGroup]="secondFormGroup" (ngSubmit)="onSubmit()">
           <h2>Terms & Conditions</h2>
-          <p>By registering, you agree to the following:</p>
-          <ul>
-            <li>Complete errands professionally and on time.</li>
-            <li>Payments are based on completed tasks.</li>
-            <li>You assume all risks while performing errands.</li>
-            <li>Violation of terms may lead to suspension.</li>
-            <li>Your data is used only for task assignments.</li>
-          </ul>
+<p>By registering as a Runner on SIBAT, you agree to the following rules and responsibilities:</p>
+<ul>
+  <li><strong>Professionalism and Conduct:</strong> You will perform all errands and tasks assigned to you with honesty, integrity, and diligence. Treat every customer with respect, courtesy, and professionalism. Harassment, discrimination, or inappropriate behavior is strictly prohibited.</li>
+  
+  <li><strong>Timely Completion of Tasks:</strong> You must complete errands within the agreed-upon timeframes. Any delays or missed deadlines should be communicated promptly to both the customer and SIBAT support team.</li>
+  
+  <li><strong>Weekly Remittance:</strong> All earnings and fees must be remitted to SIBAT on a weekly basis. Failure to remit on time may result in penalties or suspension.</li>
+  
+  <li><strong>Honesty and Transparency:</strong> Provide accurate information during registration, including valid identification and clearance documents. Misrepresentation or submission of fake documents will lead to immediate termination.</li>
+  
+  <li><strong>Penalties for Violations:</strong> Violating any of these rules may result in warnings, suspension, account deactivation, or financial penalties, including fines or withheld payments.</li>
+  
+  <li><strong>Safety and Responsibility:</strong> You are responsible for your safety while performing errands. Follow all applicable laws and traffic rules. SIBAT is not liable for accidents or incidents caused by negligence.</li>
+  
+  <li><strong>Confidentiality:</strong> Protect customer information and respect their privacy. Sharing customer data outside of SIBAT is strictly prohibited.</li>
+  
+  <li><strong>Compliance:</strong> You agree to comply with all SIBAT policies, rules, and guidelines. Updates to these terms will be communicated to you, and continued use of the platform implies acceptance.</li>
+</ul>
+<p><strong>Acknowledgment:</strong> By registering as a Runner, you confirm that you have read, understood, and agree to these Terms & Conditions. Violations may result in penalties, suspension, or termination from the platform.</p>
+
           <div class="form-check mb-3">
             <input class="form-check-input" type="checkbox" formControlName="agreement" id="agreement">
             <label class="form-check-label" for="agreement">
