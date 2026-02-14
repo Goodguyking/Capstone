@@ -37,6 +37,8 @@ export class RemitanceComponent implements OnInit {
   dailyRemittance: number = 0;
   dailyEarnings: number = 0;
   selectedDate: Date = new Date();
+  notRemittedErrands: Errand[] = [];
+
 
   constructor(private dataService: DataService, private dialog: MatDialog) { }
 
@@ -57,11 +59,19 @@ export class RemitanceComponent implements OnInit {
           total_price: Number(r.total_price) || 0
         }));
         // Filter for today by default
+        this.filterNotRemitted(); 
         this.onDateSelected();
       },
       err => console.error('Error fetching errands', err)
     );
   }
+filterNotRemitted() {
+  this.notRemittedErrands = this.errands.filter(e => e.remitted === 'Not Yet');
+}
+get totalPendingRemittance(): number {
+  return this.notRemittedErrands.reduce((sum,e)=> sum + e.service_charge,0);
+}
+
 
   onDateSelected() {
     if (!this.selectedDate) {

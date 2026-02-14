@@ -585,7 +585,7 @@ function createErrand() {
     $taskDescription = $data['task_description'] ?? null;
     $tip = floatval($data['tip'] ?? 0);
     $deliveryLocation = $data['delivery_location'] ?? null;
-    $basePrice = 50; // Example base price
+    $basePrice = 30; // Example base price
     $serviceCharge = $basePrice * 0.10; // 5% service charge
     $deliveryCharge = 50; // Example delivery charge
     $totalPrice = $basePrice + $serviceCharge + $deliveryCharge;

@@ -2,23 +2,25 @@
   <!-- Sidebar -->
   <mat-sidenav #sidenav [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile" class="sidebar">
     <mat-nav-list>
-      <a mat-list-item routerLink="/runner/tasks" routerLinkActive="active-link">Task Management</a>
-      <a mat-list-item routerLink="/runner/profile" routerLinkActive="active-link">Profile</a>
-      <a mat-list-item (click)="navigateToFirstChat()" routerLinkActive="active-link">Chat</a>
-      <a mat-list-item routerLink="/runner/history" routerLinkActive="active-link">Errand History</a>
-      <a mat-list-item routerLink="/runner/remitance" routerLinkActive="active-link">Remittance</a>
+      <a mat-list-item routerLink="/runner/tasks" routerLinkActive="active-link"> <mat-icon>assignment</mat-icon> Task Management</a>
+      <a mat-list-item routerLink="/runner/profile" routerLinkActive="active-link"> <mat-icon>person</mat-icon> Profile</a>
+      <a mat-list-item (click)="navigateToFirstChat()" routerLinkActive="active-link"> <mat-icon>chat</mat-icon> Chat</a>
+      <a mat-list-item routerLink="/runner/history" routerLinkActive="active-link"> <mat-icon>history</mat-icon> Errand History</a>
+      <a mat-list-item routerLink="/runner/remitance" routerLinkActive="active-link"> <mat-icon>payment</mat-icon> Remittance</a>
     </mat-nav-list>
     <!-- Logout Button at the Bottom -->
     <div class="logout-container">
       <a mat-list-item class="logout-button" (click)="logout()">Logout</a>
     </div>
   </mat-sidenav>
+  
 
   <!-- Main Content -->
   <mat-sidenav-content>
     <!-- Toolbar -->
     <mat-toolbar class="navbar">
-      <button mat-icon-button (click)="sidenav.toggle()">
+<button mat-icon-button (click)="sidenav.toggle()" class="menu-btn">
+
         <mat-icon>menu</mat-icon>
       </button>
       <span class="logo-container">

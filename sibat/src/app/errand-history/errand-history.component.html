@@ -5,11 +5,24 @@
 </div>
 
 <div class="cards-container">
-  <div *ngFor="let chat of chatHistory" class="chat-card">
+  <div *ngFor="let chat of chatHistory" class="chat-card"
+ [ngClass]="{
+  'not-yet': chat.remitted === 'Not Yet',
+  'pending': chat.remitted === 'Pending',
+  'remitted': chat.remitted === 'Remitted'
+ }">
 
     <div class="card-header">
       <span>History #{{ chat.history_id }}</span>
-      <span class="status">{{ chat.status }}</span>
+      <span class="status"
+ [ngClass]="{
+  'not-yet': chat.remitted === 'Not Yet',
+  'pending': chat.remitted === 'Pending',
+  'remitted': chat.remitted === 'Remitted'
+ }">
+ {{ chat.remitted }}
+</span>
+
     </div>
 
     <div class="card-body">

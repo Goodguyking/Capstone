@@ -21,7 +21,7 @@ export class PostComponent implements OnInit {
   collectingMarker: L.Marker | null = null;
   deliveryMarker: L.Marker | null = null;
 
-  basePrice: number = 50;       // Base price
+  basePrice: number = 30;       // Base price
   deliveryCharge: number = 50;  // Delivery charge
   serviceCharge: number = 0;    // 10% of base + delivery
   totalPrice: number = 0;       // Total including tip

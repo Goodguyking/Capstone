@@ -1,30 +1,68 @@
+/* ---------------- Chat Container ---------------- */
 .chat-container {
   display: flex;
   height: 500px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
+  background-color: #ffffff;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  position: relative;
 }
 
+/* ---------------- Mobile Sidebar Toggle ---------------- */
+.mobile-sidebar-toggle {
+  display: none;
+  position: fixed;
+    bottom: 480px;
+    left: 329px;
+  z-index: 300;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  transition: all 0.2s ease;
+}
+
+.mobile-sidebar-toggle:active {
+  transform: scale(0.95);
+  background-color: #0056b3;
+}
+
+.mobile-sidebar-toggle mat-icon {
+  font-size: 28px;
+}
+
+/* ---------------- Sidebar ---------------- */
 .chat-sidebar {
   width: 30%;
   background-color: #f4f4f4;
   border-right: 1px solid #ddd;
   padding: 16px;
   overflow-y: auto;
+  transition: all 0.3s ease;
 }
 
 .chat-sidebar h3 {
   margin-top: 0;
+  font-weight: 600;
+  color: #b82132;
 }
 
 .chat-history-item {
-  padding: 8px;
-  margin-bottom: 8px;
-  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
   cursor: pointer;
   background-color: #fff;
   border: 1px solid #ddd;
+  transition: all 0.2s ease;
 }
 
 .chat-history-item:hover {
@@ -33,38 +71,86 @@
 
 .chat-history-item.active {
   background-color: #007bff;
-  color: white;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0,123,255,0.3);
 }
 
+/* ---------------- Main Chat Area ---------------- */
 .chat-main {
   flex: 1;
   display: flex;
   flex-direction: column;
   padding: 16px;
+  background-color: #f9f9f9;
+  min-height: 500px;
 }
 
+/* Chat Header */
 .chat-main h3 {
   margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1.25rem;
+  color: #333;
+  font-weight: 600;
 }
 
+/* ---------------- Chat Messages ---------------- */
 .chat-messages {
   flex: 1;
   overflow-y: auto;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 8px;
-  background-color: #f9f9f9;
+  border-radius: 12px;
+  padding: 12px;
+  background-color: #fefefe;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.03);
 }
 
 .chat-message {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  max-width: 100%;
+  word-wrap: break-word;
+  position: relative;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: transform 0.15s ease;
 }
 
+.chat-message:hover {
+  transform: translateY(-1px);
+}
+
+.chat-message.sender {
+  background-color: #d4f1f4;
+  text-align: right;
+  align-self: flex-end;
+}
+
+.chat-message.receiver {
+  background-color: #ffe0e6;
+  text-align: left;
+  align-self: flex-start;
+}
+
+.message-timestamp {
+  font-size: 0.8em;
+  color: #888;
+  margin-top: 4px;
+}
+
+.chat-message.receiver .message-timestamp {
+  text-align: left;
+}
+
+/* ---------------- Input Area ---------------- */
 .chat-input {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   padding: 10px;
   border-top: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 0 0 12px 12px;
 }
 
 .input-container {
@@ -76,10 +162,16 @@
 
 .input-container input[type="text"] {
   flex: 1;
-  padding: 10px;
+  padding: 12px 16px;
+  border-radius: 25px;
   border: 1px solid #ccc;
-  border-radius: 20px;
   outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.input-container input[type="text"]:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 6px rgba(25,118,210,0.25);
 }
 
 .input-container label.upload-icon {
@@ -100,83 +192,24 @@
   border-radius: 50%;
   width: 40px;
   height: 40px;
+  margin-left: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 10px;
   cursor: pointer;
+  transition: all 0.2s;
+}
+
+.input-container button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
 }
 
 .input-container button mat-icon {
   font-size: 20px;
 }
 
-.chat-input button:hover {
-  background-color: #0056b3;
-}
-
-.no-chat-selected {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: #555;
-}
-
-.chat-message img {
-  max-width: 200px;
-  max-height: 200px;
-  margin-top: 8px;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-}
-
-.gallery-icon {
-  display: inline-block;
-  cursor: pointer;
-  margin-left: 8px;
-}
-
-.gallery-icon img {
-  width: 50px;
-  height: 50px;
-  object-fit: cover;
-}
-
-.chat-message.sender {
-  background-color: #d4f1f4;
-  text-align: right;
-  padding: 10px;
-  border-radius: 10px;
-  margin: 5px 0;
-}
-
-.chat-message.receiver {
-  background-color: #ffe0e6;
-  text-align: left;
-  padding: 10px;
-  border-radius: 10px;
-  margin: 5px 0;
-}
-
-.message-timestamp {
-  font-size: 0.8em;
-  color: #888;
-  margin-top: 4px;
-  text-align: right; /* Align to the right for sender messages */
-}
-
-.chat-message.receiver .message-timestamp {
-  text-align: left; /* Align to the left for receiver messages */
-}
-.input-container label.upload-icon img.gallery-icon {
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  margin-right: 10px;
-  vertical-align: middle;
-}
-
+/* ---------------- Image Preview ---------------- */
 .image-preview {
   display: flex;
   align-items: center;
@@ -186,7 +219,7 @@
 .image-preview img {
   max-width: 100px;
   max-height: 100px;
-  border-radius: 4px;
+  border-radius: 8px;
   margin-right: 10px;
   border: 1px solid #ddd;
 }
@@ -202,13 +235,15 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: all 0.2s;
 }
 
 .image-preview .remove-image:hover {
   background-color: #ff1a1a;
+  transform: scale(1.1);
 }
 
-/* Styles for clickable photos */
+/* ---------------- Clickable Photos ---------------- */
 .clickable-photo {
   cursor: pointer;
   max-width: 100px;
@@ -220,14 +255,12 @@
   transform: scale(1.1);
 }
 
-/* Styles for the photo modal */
+/* ---------------- Photo Modal ---------------- */
 .photo-modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
+  top:0; left:0;
+  width:100%; height:100%;
+  background: rgba(0,0,0,0.8);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -243,9 +276,10 @@
   width: 100%;
   height: auto;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
+/* ---------------- Errand Done & Banner ---------------- */
 .errand-done-container {
   display: flex;
   justify-content: flex-end;
@@ -263,174 +297,37 @@
   cursor: pointer;
   font-weight: bold;
   box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  transition: all 0.2s;
 }
 
 .errand-done-btn:hover {
   background: #2e7031;
+  transform: translateY(-1px);
 }
 
-/* filepath: [chat.component.css](http://_vscodecontentref_/1) */
-.popup-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-}
-.popup-content {
-  background: #fff;
-  padding: 24px 32px;
-  border-radius: 8px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.2);
-  text-align: center;
-}
-.popup-content button {
-  margin: 8px 12px 0 12px;
-}
 .errand-done-banner {
   background: #e8f5e9;
   color: #388e3c;
   padding: 10px;
   border-radius: 8px;
   margin: 10px 0;
-  text-align: center;
-  font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-weight: bold;
 }
+
 .errand-done-banner mat-icon {
   margin-right: 8px;
 }
 
-/* --- Modal Backdrop and Content --- */
-.modal-backdrop {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-}
-
-.modal-content {
-  background: #fff;
-  padding: 2rem 2.5rem 1.5rem 2.5rem;
-  border-radius: 14px;
-  position: relative;
-  min-width: 320px;
-  max-width: 95vw;
-  min-height: 180px;
-  text-align: center;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-  animation: modalIn 0.2s;
-}
-
-@keyframes modalIn {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-/* --- Stars --- */
-.stars {
-  margin: 1.2rem 0 0.7rem 0;
-  display: flex;
-  justify-content: center;
-  gap: 0.3rem;
-}
-
-mat-icon {
-  font-size: 2.4rem;
-  cursor: pointer;
-  color: #ccc;
-  transition: color 0.2s, text-shadow 0.2s;
-  user-select: none;
-}
-
-mat-icon.selected {
-  color: #FFD700;
-  text-shadow: 0 0 8px #FFD70077;
-}
-
-/* --- Notes Textarea --- */
-.rate-notes {
-  width: 100%;
-  margin: 1rem 0 0.5rem 0;
-  padding: 0.8rem;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: 1rem;
-  resize: vertical;
-  min-height: 70px;
-  box-sizing: border-box;
-  background: #fafbfc;
-  transition: border 0.2s;
-}
-
-.rate-notes:focus {
-  border: 1.5px solid #1976d2;
-  outline: none;
-}
-
-/* --- Modal Actions --- */
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-.submit-btn {
-  background: #1976d2;
-  color: #fff;
-  border: none;
-  padding: 0.5rem 1.4rem;
-  border-radius: 6px;
-  font-size: 1rem;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s;
-  box-shadow: 0 2px 8px #1976d21a;
-}
-
-.submit-btn:disabled {
-  background: #b0b0b0;
-  cursor: not-allowed;
-}
-
-.modal-close {
-  background: none;
-  border: none;
-  font-size: 1.7rem;
-  color: #888;
-  cursor: pointer;
-  margin-left: 0.5rem;
-  transition: color 0.2s;
-}
-
-.modal-close:hover {
-  color: #1976d2;
-}
-
-/* --- Responsive for small screens --- */
-@media (max-width: 500px) {
-  .modal-content {
-    padding: 1rem 0.5rem;
-    min-width: 90vw;
-  }
-}
-
-/* Add these styles for the errand details section */
+/* ---------------- Errand Details ---------------- */
 .errand-details {
   background-color: #f9f9f9;
   border-radius: 8px;
-  padding: 10px 15px;
+  padding: 12px 16px;
   margin-bottom: 15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
   transition: all 0.3s ease;
 }
 
@@ -439,28 +336,16 @@ mat-icon.selected {
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  padding-bottom: 5px;
-}
-
-.errand-details-header:hover {
-  opacity: 0.8;
-}
-
-.errand-details h4 {
-  color: #333;
-  margin: 0;
-  font-size: 16px;
 }
 
 .toggle-icon {
-  color: #666;
   transition: transform 0.3s ease;
 }
 
 .errand-info {
   overflow: hidden;
   transition: max-height 0.3s ease;
-  max-height: 500px; /* Maximum height when expanded */
+  max-height: 500px;
 }
 
 .errand-info.collapsed {
@@ -474,235 +359,29 @@ mat-icon.selected {
   font-size: 14px;
 }
 
-.status-done {
-  color: #4caf50;
-  font-weight: bold;
-}
+.status-done { color: #4caf50; font-weight: bold; }
+.status-pending { color: #ff9800; font-weight: bold; }
 
-.status-pending {
-  color: #ff9800;
-  font-weight: bold;
-}
-
-/* Mobile responsiveness styles */
-@media (max-width: 768px) {
-  .chat-container {
-    flex-direction: column;
-    height: auto;
-    min-height: calc(100vh - 120px);
-    padding-bottom: 1px; /* Add padding to bottom to prevent content being hidden behind the button */
-  }
-
-  .chat-sidebar {
-    width: 100%;
-    max-height: 120px;
-    border-right: none;
-    border-bottom: 1px solid #ddd;
-    padding: 10px;
-    overflow-x: auto;
-    white-space: nowrap;
-    display: flex;
-    flex-direction: row;
-  }
-
-  .chat-sidebar h3 {
-    display: none; /* Hide the header on mobile to save space */
-  }
-
-  .chat-history-item {
-    display: inline-block;
-    width: auto;
-    margin-right: 10px;
-    margin-bottom: 0;
-    padding: 8px 15px;
-    flex-shrink: 0;
-  }
-
-  .chat-main {
-    height: calc(100vh - 150px);
-    padding: 10px;
-  }
-
-  .chat-messages {
-    max-height: calc(100vh - 280px);
-  }
-
-  .chat-message {
-    padding: 8px;
-    max-width: 85%;
-  }
-
-  .chat-message.sender {
-    margin-left: auto;
-    margin-right: 0;
-  }
-
-  .chat-message.receiver {
-    margin-left: 0;
-    margin-right: auto;
-  }
-
-  .message-timestamp {
-    font-size: 0.7em;
-  }
-
-  .input-container input[type="text"] {
-    padding: 8px;
-    font-size: 14px;
-  }
-
-  .input-container button {
-    width: 36px;
-    height: 36px;
-  }
-
-  .errand-details {
-    margin-bottom: 10px;
-  }
-
-  .errand-info p {
-    margin: 6px 0;
-    font-size: 13px;
-  }
-
-  /* Improve spacing for the mobile UI */
-  .chat-input {
-    padding: 8px;
-  }
-
-  .input-container label.upload-icon {
-    right: 45px;
-  }
-
-  .gallery-icon {
-    width: 20px;
-    height: 20px;
-  }
-
-  /* Image sizing on mobile */
-  .clickable-photo {
-    max-width: 80px;
-    max-height: 80px;
-  }
-
-  .image-preview img {
-    max-width: 80px;
-    max-height: 80px;
-  }
-}
-
-/* Even smaller screens */
-@media (max-width: 480px) {
-  .chat-container {
-    min-height: calc(90vh - 100px);
-    border: none;
-    border-radius: 0;
-  }
-
-  .chat-sidebar {
-    max-height: 90px;
-    padding: 5px;
-  }
-
-  .chat-history-item {
-    padding: 6px 12px;
-    font-size: 13px;
-  }
-
-  .chat-main {
-    height: calc(100vh - 100px);
-    padding: 8px;
-  }
-
-  .chat-messages {
-    max-height: calc(100vh - 180px);
-    padding: 5px;
-  }
-
-  .chat-message {
-    max-width: 90%;
-    padding: 7px;
-    font-size: 13px;
-    margin: 4px 0;
-  }
-
-  .chat-main h3 {
-    font-size: 16px;
-    margin-bottom: 8px;
-  }
-  
-  .errand-done-btn {
-    padding: 4px 10px;
-    font-size: 12px;
-  }
-
-  .errand-details-header h4 {
-    font-size: 14px;
-  }
-}
-
-/* Mobile Sidebar Toggle Button */
-.mobile-sidebar-toggle {
-     display: none;
-    position: fixed;
-    bottom: 670px;
-    left: 320px;
-    z-index: 100;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 69%;
-    width: 60px;
-    height: 40px;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s, background-color 0.2s;
-}
-
-.mobile-sidebar-toggle:active {
-  transform: scale(0.95);
-  background-color: #0056b3;
-}
-
+/* ---------------- Mobile Sidebar ---------------- */
 @media (max-width: 768px) {
   .mobile-sidebar-toggle {
     display: flex;
   }
-  
+
   .chat-sidebar {
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     width: 80%;
     height: 100%;
-    max-height: 100vh;
-    z-index: 200;
-    background-color: #f4f4f4;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
     transform: translateX(-100%);
+    z-index: 200;
     transition: transform 0.3s ease;
-    flex-direction: column;
     overflow-y: auto;
-    overflow-x: hidden;
+    padding-top: 60px;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.25);
   }
-  
+
   .chat-sidebar.visible {
     transform: translateX(0);
-  }
-  
-  .chat-sidebar h3 {
-    display: block;
-  }
-  
-  .chat-history-item {
-    display: block;
-    width: auto;
-    margin-bottom: 8px;
-  }
-  
-  .chat-main {
-    margin-top: 0;
   }
 }

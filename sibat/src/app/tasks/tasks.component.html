@@ -3,6 +3,8 @@
 
   <div class="errand-card" *ngFor="let errand of errands">
     <div class="card-header">
+      <span class="status-badge">Available</span>
+
       <div class="header-left">
         <h3>Tip: ₱{{ errand.tip }}</h3>
         <p>{{ errand.task_description }}</p>

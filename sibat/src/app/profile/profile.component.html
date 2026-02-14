@@ -1,5 +1,5 @@
 <div class="profile-container">
-  <div class="profile-card">
+  <!-- <div class="profile-card"> -->
     <div class="profile-pic-container">
       <img [src]="user.profilepic || 'assets/avatar.png'" alt="Profile Picture" class="profile-pic" />
       <input type="file" (change)="onFileSelected($event)" accept="image/*" hidden #fileInput />
@@ -52,5 +52,5 @@
       <button type="submit" mat-raised-button color="accent">Save Changes</button>
       <button type="button" mat-button (click)="toggleEdit()">Cancel</button>
     </form>
-  </div>
+  <!-- </div> -->
 </div>

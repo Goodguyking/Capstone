@@ -1,32 +1,43 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DataService } from '../services/data.service';
 import Swal from 'sweetalert2';
-import { jwtDecode } from 'jwt-decode'; // Correct import
-import { Router } from '@angular/router'; // Import Router
+import { jwtDecode } from 'jwt-decode'; 
+import { Router } from '@angular/router';
+import { Subscription, interval } from 'rxjs';
 
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.css'],
 })
-export class TasksComponent implements OnInit {
-  errands: any[] = []; // Array to store errands
+export class TasksComponent implements OnInit, OnDestroy {
+  errands: any[] = [];
+  private pollingSubscription: Subscription | undefined;
 
-  constructor(private dataService: DataService, private router: Router) {} // Inject Router
+  constructor(private dataService: DataService, private router: Router) {}
 
   ngOnInit(): void {
-    this.fetchErrands(); // Fetch errands from the database
+    this.fetchErrands(); // initial fetch
+
+    // Poll every 5 seconds for new errands
+    this.pollingSubscription = interval(5000).subscribe(() => {
+      this.fetchErrands();
+    });
+  }
+
+  ngOnDestroy(): void {
+    // Stop polling when component is destroyed
+    if (this.pollingSubscription) {
+      this.pollingSubscription.unsubscribe();
+    }
   }
 
   fetchErrands() {
     this.dataService.getErrands().subscribe(
       (response: any) => {
-        console.log('Fetched errands:', response); // Debug log
-
-        // Convert is_accepted to a number and filter errands
+        // Only show errands that are not yet accepted
         this.errands = response.filter((errand: any) => Number(errand.is_accepted) === 0);
-
-        console.log('Filtered errands:', this.errands); // Debug log
+        console.log('Updated errands:', this.errands);
       },
       (error) => {
         console.error('Error fetching errands:', error);
@@ -35,51 +46,38 @@ export class TasksComponent implements OnInit {
   }
 
   acceptErrand(errandId: number) {
-    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
-  
+    const token = localStorage.getItem('token');
     if (!token) {
       Swal.fire('Error!', 'You are not logged in.', 'error');
       return;
     }
-  
-    try {
-      // Check if the errand is already accepted
-      const errand = this.errands.find(e => e.errand_id === errandId);
-      if (errand && Number(errand.is_accepted) === 1) {
-        Swal.fire('Already Taken!', 'This errand has already been accepted by another runner.', 'warning');
-        // Remove this errand from the display
-        this.errands = this.errands.filter(e => e.errand_id !== errandId);
-        return;
-      }
 
-      // Decode the token to get the userid
+    const errand = this.errands.find(e => e.errand_id === errandId);
+    if (errand && Number(errand.is_accepted) === 1) {
+      Swal.fire('Already Taken!', 'This errand has already been accepted.', 'warning');
+      this.errands = this.errands.filter(e => e.errand_id !== errandId);
+      return;
+    }
+
+    try {
       const decodedToken: any = jwtDecode(token);
-      const runnerId = decodedToken.userid || decodedToken.uid || decodedToken.id; // Adjust based on token structure
-  
+      const runnerId = decodedToken.userid || decodedToken.uid || decodedToken.id;
       if (!runnerId) {
         Swal.fire('Error!', 'Invalid runner ID. Please log in again.', 'error');
         return;
       }
-  
-      // Send the errand_id and runner_id to the backend
+
       this.dataService.acceptErrand(errandId, runnerId).subscribe(
         (response: any) => {
           Swal.fire('Accepted!', 'You have accepted the errand.', 'success');
-  
-          // Redirect to the chat using the chat_id returned from the backend
           if (response.chat_id) {
-            this.router.navigate(['/runner/chat', response.chat_id]); // Navigate to the chat component with the chat ID
-          } else {
-            Swal.fire('Error!', 'Failed to create or fetch chat.', 'error');
+            this.router.navigate(['/runner/chat', response.chat_id]);
           }
         },
         (error) => {
-          console.error('Error accepting errand:', error);
-          // Check if the error message indicates the errand was already taken
-          const errorMessage = error.error?.error || error.error || 'Failed to accept the errand. Please try again.';
+          const errorMessage = error.error?.error || error.error || 'Failed to accept the errand.';
           if (errorMessage.includes('already') || errorMessage.includes('accepted')) {
-            Swal.fire('Already Taken!', 'This errand has already been accepted by another runner.', 'warning');
-            // Remove this errand from the display
+            Swal.fire('Already Taken!', 'This errand has already been accepted.', 'warning');
             this.errands = this.errands.filter(e => e.errand_id !== errandId);
           } else {
             Swal.fire('Error!', errorMessage, 'error');
@@ -91,4 +89,4 @@ export class TasksComponent implements OnInit {
       Swal.fire('Error!', 'Failed to decode token. Please log in again.', 'error');
     }
   }
-  }
+}

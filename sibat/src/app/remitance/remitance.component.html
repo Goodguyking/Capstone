@@ -1,6 +1,7 @@
-<div class="remittance-container">
-  <h2>Runner Remittance Overview</h2>
+<!-- <div class="remittance-container"> -->
+  <h2><strong>Runner Remittance Overview</strong></h2>
 
+  <!-- DATE FILTER -->
   <div class="date-filter">
     <label>Select Date:</label>
     <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" (dateChange)="onDateSelected()" placeholder="Choose a date">
@@ -8,39 +9,47 @@
     <mat-datepicker #picker></mat-datepicker>
   </div>
 
+  <!-- DAILY STATS -->
   <div class="daily-stats">
-    <p>Total Earnings (Base Price Only): 
+    <p>Total Earnings (Base Price Only):
       <span class="green-text">₱{{ dailyEarnings | number:'1.2-2' }}</span>
     </p>
+
     <p>Daily Remittance (Service Charge Only):
       <span class="green-text">₱{{ dailyRemittance | number:'1.2-2' }}</span>
     </p>
-    <button mat-raised-button color="primary" class="pay-button" (click)="openPaymentDialog()" 
+
+    <button mat-raised-button color="primary" class="pay-button"
+      (click)="openPaymentDialog()"
       [disabled]="dailyRemittance === 0">
       Pay Remittance
     </button>
   </div>
 
-  <div *ngIf="filteredErrands.length === 0" class="empty">No errands found for {{ selectedDate | date:'MMM dd, yyyy' }}.</div>
+  <!-- EMPTY -->
+  <div *ngIf="filteredErrands.length === 0" class="empty">
+    No errands found for {{ selectedDate | date:'MMM dd, yyyy' }}.
+  </div>
 
-  <div class="table-container" *ngIf="filteredErrands.length > 0">
+  <!-- ================= DESKTOP TABLE ================= -->
+  <div class="table-container desktop-only" *ngIf="filteredErrands.length > 0">
     <table class="errands-table">
       <thead>
         <tr>
           <th>Errand ID</th>
           <th>Customer</th>
           <th>Status</th>
-          <th>Created At</th>
-          <th>Base Price</th>
-          <th>Delivery Charge</th>
-          <th>Service Charge</th>
+          <th>Created</th>
+          <th>Base</th>
+          <th>Delivery</th>
+          <th>Service</th>
           <th>Tip</th>
-          <th>Total Price</th>
-          <th>Remittance Status</th>
-
-
+          <th>Total</th>
+          <th>Remittance</th>
+          <!-- <th>Proof</th> -->
         </tr>
       </thead>
+
       <tbody>
         <tr *ngFor="let e of filteredErrands">
           <td>{{ e.errand_id }}</td>
@@ -52,31 +61,88 @@
           <td class="green-text">₱{{ e.service_charge | number:'1.2-2' }}</td>
           <td>₱{{ e.tip | number:'1.2-2' }}</td>
           <td>₱{{ e.total_price | number:'1.2-2' }}</td>
+
           <td [ngClass]="{
-  'remitted-not-yet': e.remitted === 'Not Yet',
-  'remitted-pending': e.remitted === 'Pending',
-  'remitted-remitted': e.remitted === 'Remitted'
-}">{{ e.remitted }}</td>
-<td *ngIf="e.proof"><a [href]="'https://sibatapi2.loophole.site/CAPSTONE/backend/uploads/proof/' + e.proof" target="_blank">View</a></td>
+            'remitted-not-yet': e.remitted === 'Not Yet',
+            'remitted-pending': e.remitted === 'Pending',
+            'remitted-remitted': e.remitted === 'Remitted'
+          }">
+            {{ e.remitted }}
+          </td>
 
-
+          <td *ngIf="e.proof">
+            <a [href]="'https://sibatapi2.loophole.site/CAPSTONE/backend/uploads/proof/' + e.proof" target="_blank">View</a>
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- Mobile Cards -->
-  <div class="cards-container" *ngIf="filteredErrands.length > 0">
+  <!-- ================= DESKTOP PENDING TABLE ================= -->
+  <div class="pending-section desktop-only" *ngIf="notRemittedErrands.length > 0">
+    <h3><strong>Not Yet Remitted Errands</strong></h3>
+
+    <p><strong>Total Pending Remittance:</strong>
+      ₱{{ totalPendingRemittance | number:'1.2-2' }}
+    </p>
+
+    <table class="pending-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let e of notRemittedErrands">
+          <td>{{ formatDate(e.created_at) }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ================= MOBILE CARDS ================= -->
+  <div class="cards-container mobile-only" *ngIf="filteredErrands.length > 0">
+
     <div class="errand-card" *ngFor="let e of filteredErrands">
-      <p><strong>Errand ID:</strong> {{ e.errand_id }}</p>
+      <p class="card-title">Errand #{{ e.errand_id }}</p>
+
       <p><strong>Customer:</strong> {{ e.customer_first_name }} {{ e.customer_last_name }}</p>
-      <p><strong>Status:</strong> {{ e.status }}</p>
-      <p><strong>Created At:</strong> {{ formatDate(e.created_at) }}</p>
-      <p><strong>Base Price:</strong> ₱{{ e.base_price | number:'1.2-2' }}</p>
-      <p><strong>Delivery Charge:</strong> ₱{{ e.delivery_charge | number:'1.2-2' }}</p>
-      <p><strong>Service Charge:</strong> <span class="green-text">₱{{ e.service_charge | number:'1.2-2' }}</span></p>
+
+      <p>
+        <strong>Status:</strong>
+        <span [ngClass]="{
+          'remitted-not-yet': e.remitted === 'Not Yet',
+          'remitted-pending': e.remitted === 'Pending',
+          'remitted-remitted': e.remitted === 'Remitted'
+        }">
+          {{ e.remitted }}
+        </span>
+      </p>
+
+      <p><strong>Date:</strong> {{ formatDate(e.created_at) }}</p>
+      <p><strong>Base:</strong> ₱{{ e.base_price | number:'1.2-2' }}</p>
+      <p><strong>Delivery:</strong> ₱{{ e.delivery_charge | number:'1.2-2' }}</p>
+      <p><strong>Service:</strong> <span class="green-text">₱{{ e.service_charge | number:'1.2-2' }}</span></p>
       <p><strong>Tip:</strong> ₱{{ e.tip | number:'1.2-2' }}</p>
-      <p><strong>Total Price:</strong> ₱{{ e.total_price | number:'1.2-2' }}</p>
+      <p><strong>Total:</strong> ₱{{ e.total_price | number:'1.2-2' }}</p>
     </div>
   </div>
-</div>
+
+  <!-- MOBILE PENDING -->
+  <div class="pending-section mobile-only" *ngIf="notRemittedErrands.length > 0">
+
+    <h3><strong>Not Yet Remitted Errands</strong></h3>
+
+    <p><strong>Total Pending Remittance:</strong>
+      ₱{{ totalPendingRemittance | number:'1.2-2' }}
+    </p>
+
+    <div class="pending-card" *ngFor="let e of notRemittedErrands">
+      <p class="card-title">Errand #{{ e.errand_id }}</p>
+      <p><strong>Date:</strong> {{ formatDate(e.created_at) }}</p>
+      <p><strong>Service:</strong> <span class="green-text">₱{{ e.service_charge | number:'1.2-2' }}</span></p>
+      <p class="remitted-not-yet">Not Yet Remitted</p>
+    </div>
+
+  </div>
+<!-- </div> -->
