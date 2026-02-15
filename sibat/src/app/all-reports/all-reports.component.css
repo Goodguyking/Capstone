@@ -1,0 +1,102 @@
+.all-reports-page {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+h1 {
+  color: #b82132;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+p {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #777;
+  font-size: 14px;
+}
+
+.reports-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.reports-table th,
+.reports-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.reports-table th {
+  background-color: #b82132;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.reports-table tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+.reports-table tr:hover {
+  background: #fff0f0;
+}
+
+.update-btn {
+  padding: 6px 12px;
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: 0.3s;
+}
+
+.update-btn:hover {
+  background-color: #2980b9;
+}
+
+.status.pending {
+  color: #fff;
+  background-color: #f39c12;
+  padding: 3px 6px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.status.under_review {
+  color: #fff;
+  background-color: #3498db;
+  padding: 3px 6px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.status.resolved {
+  color: #fff;
+  background-color: #2ecc71;
+  padding: 3px 6px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.status.dismissed {
+  color: #fff;
+  background-color: #95a5a6;
+  padding: 3px 6px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.no-data {
+  text-align: center;
+  color: #777;
+  font-size: 14px;
+}

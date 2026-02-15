@@ -1034,8 +1034,108 @@ function markAsRemitted() {
 }
 
 
+function SendReport() {
+    global $conn;
+
+    header('Content-Type: application/json');
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        echo json_encode(["error" => "Invalid request method"]);
+        exit;
+    }
+
+    $user_id  = $_POST['userid'] ?? null; // frontend still sends 'userid'
+    $title    = $_POST['title'] ?? null;
+    $message  = $_POST['message'] ?? null;
+    $category = $_POST['type'] ?? null;   // map 'type' to 'category'
+
+    if (!$user_id || !$title || !$message || !$category) {
+        echo json_encode(["error" => "Missing required data"]);
+        exit;
+    }
+
+    // Handle optional file
+    $filename = null;
+    $filetype = null;
+    if (isset($_FILES['evidence']) && $_FILES['evidence']['error'] === UPLOAD_ERR_OK) {
+        $file = $_FILES['evidence'];
+        $uploadDir = __DIR__ . '/../uploads/reports/';
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+
+        $filename = time() . '_' . basename($file['name']);
+        $filetype = $file['type'];
+        $targetPath = $uploadDir . $filename;
+
+        if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
+            echo json_encode(["error" => "Failed to upload evidence file"]);
+            exit;
+        }
+    }
+
+    // Insert report into database
+    $stmt = $conn->prepare("
+        INSERT INTO reports (user_id, title, message, category, status, attachment, attachment_type, created_at)
+        VALUES (?, ?, ?, ?, 'pending', ?, ?, NOW())
+    ");
+    $stmt->bind_param('isssss', $user_id, $title, $message, $category, $filename, $filetype);
+
+    if ($stmt->execute()) {
+        echo json_encode(["success" => true, "message" => "Report submitted successfully."]);
+    } else {
+        echo json_encode(["success" => false, "message" => "Database error: " . $stmt->error]);
+    }
+
+    $stmt->close();
+}
 
 
+function updateReport() {
+    global $conn;
+
+    header('Content-Type: application/json');
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        echo json_encode(["success" => false, "message" => "Invalid request method"]);
+        exit;
+    }
+
+    // Read raw input (for JSON payloads)
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    // Collect data safely
+    $reportId = $input['reportId'] ?? null;
+    $status = $input['status'] ?? null;
+    $remarks = $input['remarks'] ?? '';
+
+    if (!$reportId || !$status) {
+        echo json_encode(["success" => false, "message" => "Missing required data"]);
+        exit;
+    }
+
+    // Sanitize inputs
+    $status = $conn->real_escape_string($status);
+    $remarks = $conn->real_escape_string($remarks);
+
+    // Update reports table
+    $stmt = $conn->prepare("
+        UPDATE reports 
+        SET status = ?, remarks = ? 
+        WHERE report_id = ?
+    ");
+    $stmt->bind_param('ssi', $status, $remarks, $reportId);
+
+    if ($stmt->execute()) {
+        echo json_encode(["success" => true, "message" => "Report updated successfully"]);
+    } else {
+        echo json_encode([
+            "success" => false,
+            "message" => "Failed to update report",
+            "db_error" => $stmt->error
+        ]);
+    }
+
+    $stmt->close();
+}
 
 
 

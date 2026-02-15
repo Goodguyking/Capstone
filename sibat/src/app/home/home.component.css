@@ -18,7 +18,7 @@
     text-align: center;
     color: white; /* Ensuring text stands out */
     font-family: 'Kanit', sans-serif;
-    font-size: 20px;
+    font-size: 10px;
     font-weight: bold;
     display: flex;
     flex-direction: column;
@@ -58,6 +58,7 @@
     text-align: center;
 }
 h2 {
+    font-size: 20px;
     z-index: 4;
 }
 

@@ -18,6 +18,8 @@ import { ChatComponent } from './chat/chat.component';
 import { ErrandHistoryComponent } from './errand-history/errand-history.component';
 import { RemitanceComponent } from './remitance/remitance.component';
 import { AllErrandsComponent } from './all-errands/all-errands.component';
+import { ReportsComponent } from './reports/reports.component';
+import { AllReportsComponent } from './all-reports/all-reports.component';
 
 const routes: Routes = [
   // Redirect root to login
@@ -29,6 +31,7 @@ const routes: Routes = [
   { path: 'registration-runner', component: RegisterRunnerComponent },
   { path: 'post', component: PostComponent },
 
+
   // Runner routes
   { path: 'runner', component: RunnerComponent, canActivate: [AuthGuard], children: [
     { path: '', redirectTo: 'tasks', pathMatch: 'full' },
@@ -37,6 +40,7 @@ const routes: Routes = [
     { path: 'profile', component: ProfileComponent }, // Add ProfileComponent here
     { path: 'history', component: ErrandHistoryComponent }, // Add ProfileComponent here
     { path: 'remitance', component: RemitanceComponent }, // Add ProfileComponent here
+    { path: 'reports', component: ReportsComponent },
 
 
     
@@ -51,6 +55,7 @@ const routes: Routes = [
       { path: 'users', component: UserManagementComponent },
       { path: 'applications', component: ApplicationsComponent },
       { path: 'all-errands', component: AllErrandsComponent },
+      { path: 'all-reports', component: AllReportsComponent },
     ]
   },
 
@@ -63,6 +68,7 @@ const routes: Routes = [
       { path: 'home', component: HomeComponent },
       { path: 'profile', component: ProfileComponent },
       { path: 'chat', component: ChatComponent }, // Add ChatComponent here
+      { path: 'reports', component: ReportsComponent },
 
     ]
   },

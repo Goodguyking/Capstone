@@ -1,0 +1,219 @@
+.report-page {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+/* Header */
+.report-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.header-icon {
+  font-size: 48px;
+  color: #b82132;
+}
+
+.report-header h1 {
+  margin: 10px 0 5px;
+  color: #b82132;
+}
+
+.report-header p {
+  color: #777;
+  font-size: 14px;
+}
+
+/* Card */
+.report-card {
+  background: white;
+  padding: 25px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Inputs */
+.form-group {
+  margin-bottom: 18px;
+}
+
+label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+  color: #b82132;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  transition: 0.25s;
+}
+
+.form-control:focus {
+  border-color: #b82132;
+  box-shadow: 0 0 0 3px rgba(184, 33, 50, 0.15);
+  outline: none;
+}
+
+/* Upload box */
+.upload-box {
+  position: relative;
+  border: 2px dashed #d2665a;
+  border-radius: 12px;
+  padding: 25px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.25s;
+  color: #b82132;
+}
+
+.upload-box:hover {
+  background: #fff6f5;
+}
+
+.upload-box input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-name {
+  display: block;
+  margin-top: 6px;
+  color: #2ecc71;
+}
+
+/* Submit Button */
+.submit-btn {
+  width: 100%;
+  border: none;
+  background: linear-gradient(135deg, #b82132, #d2665a);
+  color: white;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: bold;
+  margin-top: 10px;
+  transition: 0.25s;
+  box-shadow: 0 8px 20px rgba(184, 33, 50, 0.3);
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(184, 33, 50, 0.4);
+}
+
+/* Note */
+.note {
+  text-align: center;
+  font-size: 12px;
+  margin-top: 15px;
+  color: #888;
+}
+
+/* Reports List */
+.reports-container {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.report-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  padding: 1rem 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.report-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+.report-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.report-summary h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #b82132;
+}
+
+.status {
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+}
+
+.status.pending { background-color: #f39c12; }
+.status.under_review { background-color: #3498db; }
+.status.resolved { background-color: #2ecc71; }
+.status.dismissed { background-color: #95a5a6; }
+
+.expand-icon {
+  font-size: 20px;
+  color: #7f8c8d;
+}
+
+.report-details {
+  margin-top: 0.8rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(0,0,0,0.08);
+  color: #34495e;
+}
+
+.report-details p {
+  margin: 0.3rem 0;
+  line-height: 1.4;
+}
+
+/* Attachment link clickable without toggling card */
+.report-details a.attachment-link {
+  color: #b82132;
+  text-decoration: underline;
+  position: relative;
+  z-index: 10;
+}
+
+.report-details a.attachment-link:hover {
+  color: #d2665a;
+}
+
+/* Image preview for attachments */
+.report-details img.attachment-preview {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* No Reports */
+.no-reports {
+  text-align: center;
+  font-size: 1rem;
+  color: #7f8c8d;
+  margin-top: 2rem;
+}
+.attachment-preview {
+  max-width: 150px;
+  max-height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-top: 6px;
+  display: block;
+}

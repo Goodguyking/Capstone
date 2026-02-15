@@ -155,8 +155,20 @@ switch ($requestUri) {
         getWeeklyRemittanceSummary();
         break;
 
+    case 'SendReport':
+        require_once 'routes/post.php';
+        SendReport();
+        break;
 
-
+    case 'getReports':
+        require_once 'routes/get.php';
+        getReports();
+        break;
+        
+    case 'updateReport':
+        require_once 'routes/post.php';
+        updateReport();
+        break;
 
 
 

@@ -1,1 +1,130 @@
-<p>reports works!</p>
+<div class="report-page">
+
+  <!-- HEADER: Submit Report -->
+  <div class="report-header">
+    <mat-icon class="header-icon">feedback</mat-icon>
+    <h1>Send Feedback or Report</h1>
+    <p>Your voice helps us keep the community safe and improve the app.</p>
+  </div>
+
+  <!-- FORM CARD -->
+  <div class="report-card">
+
+    <!-- Title -->
+    <div class="form-group">
+      <label>Title</label>
+      <input
+        type="text"
+        [(ngModel)]="report.title"
+        class="form-control"
+        placeholder="Short summary of your concern"
+      />
+    </div>
+
+    <!-- Category -->
+    <div class="form-group">
+      <label>Report Type</label>
+      <select [(ngModel)]="report.type" class="form-control">
+        <option value="">Select category</option>
+        <option value="feedback">Feedback</option>
+        <option value="malicious_activity">Malicious Activity</option>
+        <option value="scam">Scam</option>
+        <option value="harassment">Harassment</option>
+        <option value="fraud">Fraud</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+
+    <!-- Message -->
+    <div class="form-group">
+      <label>Description</label>
+      <textarea
+        rows="5"
+        [(ngModel)]="report.message"
+        class="form-control"
+        placeholder="Explain what happened..."
+      ></textarea>
+    </div>
+
+    <!-- Evidence Upload -->
+    <div class="form-group">
+      <label>Attach Evidence (optional)</label>
+      <div class="upload-box">
+        <mat-icon>cloud_upload</mat-icon>
+        <span>Click to upload file</span>
+        <input
+          type="file"
+          (change)="onFileSelect($event)"
+          accept="image/*,application/pdf"
+        />
+      </div>
+      <small *ngIf="selectedFile" class="file-name">
+        File selected: {{ selectedFile.name }}
+      </small>
+    </div>
+
+    <!-- Submit Button -->
+    <button class="submit-btn" (click)="submitReport()">
+      <mat-icon>send</mat-icon>
+      Submit Report
+    </button>
+
+    <!-- Note -->
+    <p class="note">
+      All reports are confidential and reviewed by our moderation team.
+    </p>
+
+  </div>
+
+</div>
+
+<!-- HEADER: Your Reports -->
+<div class="report-page">
+
+  <div class="report-header">
+    <mat-icon class="header-icon">feedback</mat-icon>
+    <h1>Your Reports & Feedback</h1>
+    <p>Click on a report card to see details. Attachments are clickable links.</p>
+  </div>
+
+  <!-- REPORT CARDS -->
+  <div class="reports-container">
+    <div *ngIf="reportsList.length === 0" class="no-reports">
+      <p>You haven't submitted any reports yet.</p>
+    </div>
+
+    <div *ngFor="let report of reportsList" class="report-card" (click)="report.expanded = !report.expanded">
+
+      <!-- Report Summary -->
+      <div class="report-summary">
+        <h3>{{ report.title }}</h3>
+        <span class="status" [ngClass]="report.status">{{ report.status | titlecase }}</span>
+        <mat-icon class="expand-icon">{{ report.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+      </div>
+
+      <!-- Expanded Details -->
+      <div *ngIf="report.expanded" class="report-details" (click)="$event.stopPropagation()">
+        <p><strong>Type:</strong> {{ report.category | titlecase }}</p>
+        <p><strong>Message:</strong> {{ report.message }}</p>
+        <p><strong>Admin Remarks:</strong> {{ report.remarks || 'No remarks yet' }}</p>
+        <p><strong>Submitted On:</strong> {{ report.created_at | date:'medium' }}</p>
+
+        <!-- Inline image preview with fixed size -->
+        <p *ngIf="report.attachment && (report.attachment.endsWith('.jpg') || report.attachment.endsWith('.jpeg') || report.attachment.endsWith('.png'))">
+          <img class="attachment-preview" [src]="'https://sibatapi2.loophole.site/Capstone/backend/uploads/Reports/' + report.attachment" />
+        </p>
+
+        <!-- PDF or other attachments -->
+        <p *ngIf="report.attachment">
+          <strong>Attachment:</strong>
+          <a class="attachment-link"
+             [href]="'https://sibatapi2.loophole.site/Capstone/backend/uploads/Reports/' + report.attachment"
+             target="_blank"
+             (click)="$event.stopPropagation()">{{ report.attachment }}</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+</div>

@@ -511,6 +511,33 @@ markAsRemitted(errandId: number) {
 }
 
 
+// data.service.ts
+sendReport(userid: string, title: string, message: string, type: string, file?: File) {
+  const formData = new FormData();
+  formData.append('userid', userid);
+  formData.append('title', title);
+  formData.append('message', message);
+  formData.append('type', type);
+
+  if (file) {
+    formData.append('evidence', file); // matches $_FILES['evidence']
+  }
+
+  // Important: Do NOT set Content-Type manually for FormData
+  return this.http.post<any>(`${this.apiUrl}?route=SendReport`, formData);
+}
+
+getReports(userid: string) {
+  return this.http.get<any>(`${this.apiUrl}?route=getReports&userid=${userid}`);
+}
+
+getAllReports() {
+  return this.http.get<any>(`${this.apiUrl}?route=getAllReports`);
+}
+
+updateReport(reportId: number, status: string, remarks: string) {
+  return this.http.post<any>(`${this.apiUrl}?route=updateReport`, { reportId, status, remarks });
+}
 
 
 

@@ -1,0 +1,50 @@
+<div class="all-reports-page">
+
+  <h1>All Reports</h1>
+  <p>View all user reports. Click "Update" to change status or add admin remarks.</p>
+
+  <table class="reports-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>User ID</th>
+        <th>Title</th>
+        <th>Type</th>
+        <th>Message</th>
+        <th>Attachment</th>
+        <th>Status</th>
+        <th>Remarks</th>
+        <th>Submitted On</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let report of reportsList">
+        <td>{{ report.report_id }}</td>
+        <td>{{ report.user_id }}</td>
+        <td>{{ report.title }}</td>
+        <td>{{ report.category | titlecase }}</td>
+        <td>{{ report.message }}</td>
+        <td *ngIf="report.attachment">
+          <a [href]="'https://sibatapi2.loophole.site/Capstone/backend/uploads/Reports/' + report.attachment" target="_blank">
+            {{ report.attachment }}
+          </a>
+        </td>
+        <td [ngClass]="report.status">{{ report.status | titlecase }}</td>
+        <td>{{ report.remarks || 'No remarks' }}</td>
+        <td>{{ report.created_at | date:'medium' }}</td>
+        <td>
+          <button class="update-btn" (click)="openUpdateModal(report)">
+            Update
+          </button>
+        </td>
+      </tr>
+
+      <tr *ngIf="reportsList.length === 0">
+        <td colspan="10" class="no-data">No reports available</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

@@ -667,6 +667,31 @@ function getWeeklyRemittanceSummary() {
     echo json_encode($rows);
 }
 
+function getReports() {
+    global $conn;
+
+    header('Content-Type: application/json');
+
+    $sql = "SELECT report_id, user_id, title, message, category, status, remarks, attachment, attachment_type, created_at
+            FROM reports
+            ORDER BY created_at DESC";
+
+    $result = $conn->query($sql);
+
+    if (!$result) {
+        echo json_encode(["success" => false, "error" => $conn->error]);
+        exit;
+    }
+
+    $reports = [];
+    while ($row = $result->fetch_assoc()) {
+        $reports[] = $row;
+    }
+
+    echo json_encode(["success" => true, "reports" => $reports]);
+}
+
+
 
 
 

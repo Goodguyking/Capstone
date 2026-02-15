@@ -53,6 +53,7 @@ import { PaymentDialogComponent } from './payment-dialog/payment-dialog.componen
 import { AllErrandsComponent } from './all-errands/all-errands.component';
 import { FooterComponent } from './footer/footer.component';
 import { ReportsComponent } from './reports/reports.component';
+import { AllReportsComponent } from './all-reports/all-reports.component';
 
 @NgModule({
   declarations: [
@@ -77,6 +78,8 @@ import { ReportsComponent } from './reports/reports.component';
     AllErrandsComponent,
     FooterComponent,
     ReportsComponent,
+    AllReportsComponent,
+    
     
 
   ],
@@ -101,6 +104,7 @@ import { ReportsComponent } from './reports/reports.component';
     MatDatepickerModule,
     MatNativeDateModule,
     MatDialogModule,
+    MatIconModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable
