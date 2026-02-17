@@ -40,7 +40,7 @@ const routes: Routes = [
     { path: 'profile', component: ProfileComponent }, // Add ProfileComponent here
     { path: 'history', component: ErrandHistoryComponent }, // Add ProfileComponent here
     { path: 'remitance', component: RemitanceComponent }, // Add ProfileComponent here
-    { path: 'reports', component: ReportsComponent },
+    { path: 'Runner-reports', component: ReportsComponent },
 
 
     

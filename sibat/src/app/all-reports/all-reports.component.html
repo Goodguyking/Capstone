@@ -1,50 +1,111 @@
 <div class="all-reports-page">
 
   <h1>All Reports</h1>
-  <p>View all user reports. Click "Update" to change status or add admin remarks.</p>
+  <p>Monitor reports, review details, and manage user concerns.</p>
 
-  <table class="reports-table">
+  <!-- ================= TABLE (DESKTOP) ================= -->
+  <table class="reports-table desktop-view">
     <thead>
       <tr>
         <th>ID</th>
-        <th>User ID</th>
+        <th>User</th>
         <th>Title</th>
         <th>Type</th>
-        <th>Message</th>
-        <th>Attachment</th>
         <th>Status</th>
-        <th>Remarks</th>
-        <th>Submitted On</th>
+        <th>Date</th>
         <th>Action</th>
       </tr>
     </thead>
-
     <tbody>
       <tr *ngFor="let report of reportsList">
         <td>{{ report.report_id }}</td>
-        <td>{{ report.user_id }}</td>
-        <td>{{ report.title }}</td>
+        <td>#{{ report.user_id }}</td>
+        <td class="title">{{ report.title }}</td>
         <td>{{ report.category | titlecase }}</td>
-        <td>{{ report.message }}</td>
-        <td *ngIf="report.attachment">
-          <a [href]="'https://sibatapi2.loophole.site/Capstone/backend/uploads/Reports/' + report.attachment" target="_blank">
-            {{ report.attachment }}
-          </a>
+        <td>
+          <span class="status" [ngClass]="report.status">
+            {{ report.status | titlecase }}
+          </span>
         </td>
-        <td [ngClass]="report.status">{{ report.status | titlecase }}</td>
-        <td>{{ report.remarks || 'No remarks' }}</td>
-        <td>{{ report.created_at | date:'medium' }}</td>
+        <td>{{ report.created_at | date:'short' }}</td>
         <td>
           <button class="update-btn" (click)="openUpdateModal(report)">
             Update
           </button>
+          <button class="update-btn preview-btn" (click)="previewReport(report)">
+            Preview
+          </button>
         </td>
       </tr>
-
       <tr *ngIf="reportsList.length === 0">
-        <td colspan="10" class="no-data">No reports available</td>
+        <td colspan="7" class="no-data">No reports available</td>
       </tr>
     </tbody>
   </table>
 
+  <!-- ================= MOBILE CARDS ================= -->
+  <div class="cards-view">
+    <div class="report-card" *ngFor="let report of reportsList">
+      <div class="card-header">
+        <h3>{{ report.title }}</h3>
+        <span class="status" [ngClass]="report.status">
+          {{ report.status | titlecase }}
+        </span>
+      </div>
+      <div class="card-body">
+        <p><strong>User:</strong> #{{ report.user_id }}</p>
+        <p><strong>Type:</strong> {{ report.category | titlecase }}</p>
+        <p><strong>Date:</strong> {{ report.created_at | date:'mediumDate' }}</p>
+      </div>
+      <div class="card-actions">
+        <button class="update-btn" (click)="openUpdateModal(report)">Update</button>
+        <button class="update-btn preview-btn" (click)="previewReport(report)">Preview</button>
+      </div>
+    </div>
+
+    <p *ngIf="reportsList.length === 0" class="no-data">No reports available</p>
+  </div>
+
+</div>
+
+<!-- ================= PREVIEW MODAL ================= -->
+<div class="preview-modal" *ngIf="selectedReport">
+  <div class="preview-box">
+
+    <div class="preview-header">
+      <h2>{{ selectedReport.title }}</h2>
+
+            <img src="assets/icons/close.png" 
+           class="close-btn" 
+           alt="Close" 
+           (click)="selectedReport = null" />
+    </div>
+
+    <div class="preview-content">
+      <p><strong>User:</strong> #{{ selectedReport.user_id }}</p>
+      <p><strong>Type:</strong> {{ selectedReport.category | titlecase }}</p>
+      <p><strong>Status:</strong>
+        <span class="status" [ngClass]="selectedReport.status">
+          {{ selectedReport.status | titlecase }}
+        </span>
+      </p>
+      <p><strong>Description:</strong></p>
+      <div class="message-box">{{ selectedReport.message }}</div>
+      <p><strong>Admin Remarks:</strong> {{ selectedReport.remarks || 'No remarks yet' }}</p>
+
+      <!-- IMAGE PREVIEW -->
+      <img *ngIf="selectedReport.attachment && isImage(selectedReport.attachment)"
+           class="preview-img"
+           [src]="'https://sibatapi2.loophole.site/Capstone/backend/uploads/Reports/' + selectedReport.attachment">
+
+      <!-- FILE LINK -->
+      <a *ngIf="selectedReport.attachment"
+         target="_blank"
+         class="file-link"
+         [href]="'https://sibatapi2.loophole.site/Capstone/backend/uploads/Reports/' + selectedReport.attachment">
+        Open Attachment
+      </a>
+    </div>
+
+  </div>
 </div>

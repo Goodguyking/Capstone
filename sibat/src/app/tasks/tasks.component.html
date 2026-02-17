@@ -1,14 +1,20 @@
-  <div class="spear-container">
-    <img src="assets/BG.png" class="spear" />
-    <img src="assets/BG.png" class="spear" />
-    <img src="assets/BG.png" class="spear" />
-    <img src="assets/BG.png" class="spear" />
-    <img src="assets/BG.png" class="spear" />
-  </div>
+<div class="spear-container">
+  <img src="assets/BG.png" class="spear" />
+  <img src="assets/BG.png" class="spear" />
+  <img src="assets/BG.png" class="spear" />
+  <img src="assets/BG.png" class="spear" />
+  <img src="assets/BG.png" class="spear" />
+</div>
 
 <div class="tasks-container">
   <h1>Available Errands</h1>
 
+  <!-- NO ERRANDS MESSAGE -->
+  <p class="no-errands" *ngIf="errands.length === 0">
+    No errands available as of now.
+  </p>
+
+  <!-- ERRAND CARDS -->
   <div class="errand-card" *ngFor="let errand of errands">
     <div class="card-header">
       <span class="status-badge">Available</span>
@@ -17,8 +23,11 @@
         <h3>Tip: ₱{{ errand.tip }}</h3>
         <p>{{ errand.task_description }}</p>
         <p><strong>Collecting:</strong> {{ errand.collecting_location }}</p>
-        <p class="timestamp"><small>Posted: {{ errand.created_at | date:'MMM dd, yyyy - hh:mm a' }}</small></p>
+        <p class="timestamp">
+          <small>Posted: {{ errand.created_at | date:'MMM dd, yyyy - hh:mm a' }}</small>
+        </p>
       </div>
+
       <button class="toggle-details" (click)="errand.showDetails = !errand.showDetails">
         {{ errand.showDetails ? 'Hide Details' : 'View Details' }}
       </button>
@@ -34,4 +43,5 @@
     </div>
   </div>
 </div>
+
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>

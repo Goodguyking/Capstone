@@ -11,6 +11,19 @@ h1{
   letter-spacing:.3px;
 }
 
+.no-errands {
+  text-align: center;
+  color: #b82132; /* matches your main theme */
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 40px 0;
+  background: #fff0f0;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+
 /* CARD */
 .errand-card{
   position:relative;
